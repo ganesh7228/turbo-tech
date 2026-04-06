@@ -466,7 +466,7 @@
       <h1>TurboTech</h1>
       <span>Outreach Tracker</span>
     </div>
-    <button class="btn-add" id="btnOpenModal" onclick="showReadOnly()">
+    <button class="btn-add" id="btnOpenModal" onclick="openEntryChooser()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add New Entry
     </button>
@@ -485,12 +485,6 @@
       Refresh
     </button>
   </div>
-</div>
-
-<!-- READONLY BANNER -->
-<div class="readonly-banner">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-  <strong>Read-Only Mode</strong> — Data syncs live from Google Sheets. To add or edit entries, update your Google Sheet directly.
 </div>
 
 <!-- MAIN -->
@@ -717,6 +711,7 @@
 <script>
   const STORAGE_KEY = 'turbotech_outreach_v1';
   const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSvxktInuMkbvA05cNjh4xlwraSqQuB4ieUUZh3t_x5MIfeDDpeyai5Pi5AJZE9pfAIBaHMKLfHUBU_/pub?output=csv';
+  const API_URL = "https://script.google.com/macros/s/AKfycbz6ESTKMwOnIc_Q4cNQF_2f2OCo0Er6G8CwFRcJH0U0ps3N9tF9B08K9XBaNisPSirMWA/exec";
   const REFRESH_MS = 10000;
   let entries = [];
   let editingId = null;
@@ -1101,26 +1096,33 @@
     save(); closeModal(); renderList();
   }
 
-  function saveEntry() {
-    const name = document.getElementById('fieldName').value.trim();
-    if (!name) { document.getElementById('fieldName').focus(); document.getElementById('fieldName').style.borderColor='var(--red)'; return; }
-    document.getElementById('fieldName').style.borderColor='';
-    const recurring = document.getElementById('fieldRecurring').value;
-    const recurringType = recurring==='yes' ? document.getElementById('fieldRecurringType').value : '';
-    const recurringDate = (recurring==='yes'&&recurringType==='date') ? document.getElementById('fieldRecurringDate').value : '';
-    const data = {
-      name, contacted:document.getElementById('fieldContacted').value,
-      response:document.getElementById('fieldResponse').value,
-      followup:document.getElementById('fieldFollowup').value,
-      notes:document.getElementById('fieldNotes').value.trim(),
-      phone:document.getElementById('fieldPhone').value.trim(),
-      contactedOn:document.getElementById('fieldContactedOn').value,
-      recurring, recurringType, recurringDate
-    };
-    if (editingId) { const idx=entries.findIndex(e=>e.id===editingId); entries[idx]={...entries[idx],...data}; }
-    else { entries.unshift({id:uid(),createdAt:Date.now(),...data}); }
-    save(); closeModal(); renderList();
+  async function saveEntry() {
+  const entry = {
+    name: document.getElementById('fieldName').value,
+    phone: document.getElementById('fieldPhone').value,
+    contacted: document.getElementById('fieldContacted').value,
+    response: document.getElementById('fieldResponse').value,
+    followUpDate: document.getElementById('fieldFollowup').value,
+    notes: document.getElementById('fieldNotes').value
+  };
+
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(entry)
+    });
+
+    showToast("✅ Entry added!");
+    closeModal();
+
+    // Refresh data
+    fetchSheetData(true);
+
+  } catch (err) {
+    showToast("❌ Failed to add entry");
+    console.error(err);
   }
+}
 
   /* ── DELETE (read-only) ── */
   function openConfirm(id) { showReadOnly(); }
