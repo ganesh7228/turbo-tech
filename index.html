@@ -817,10 +817,6 @@
     refreshTimer = setInterval(() => fetchSheetData(false), REFRESH_MS);
   }
 
-  /* ── READ-ONLY GUARDS ── */
-  function showReadOnly() {
-    showToast('Read-Only Mode — Please update data in Google Sheets directly.');
-  }
 
   /* ── STORAGE (cache only, not primary) ── */
   function load() { entries = []; }
@@ -1124,10 +1120,43 @@
   }
 }
 
-  /* ── DELETE (read-only) ── */
-  function openConfirm(id) { showReadOnly(); }
-  function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); deletingId=null; }
-  function confirmDelete() { closeConfirm(); }
+/* ── DELETE (WORKING) ── */
+function openConfirm(id) {
+  deletingId = id;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  deletingId = null;
+}
+
+async function confirmDelete() {
+  const entry = entries.find(e => e.id === deletingId);
+  if (!entry) return;
+
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "delete",
+        name: entry.name,
+        phone: entry.phone
+      })
+    });
+
+    showToast("🗑️ Deleted successfully");
+
+    closeConfirm();
+
+    // 🔥 Refresh data
+    fetchSheetData(true);
+
+  } catch (err) {
+    showToast("❌ Delete failed");
+    console.error(err);
+  }
+}
 
   /* ── HELPERS ── */
   function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
