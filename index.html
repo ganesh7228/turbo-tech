@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TurboTech Outreach Tracker</title>
+  <meta name="description" content="Track outreach contacts, responses, and follow-ups for TurboTech with this personal outreach tracker."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text-primary: #1a202c;
+      --text-secondary: #718096;
+      --text-muted: #a0aec0;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-light: #eff6ff;
+      --green: #22c55e;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --red: #ef4444;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+      --yellow: #f59e0b;
+      --yellow-bg: #fffbeb;
+      --yellow-border: #fde68a;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+      --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-xs: 6px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand { display: flex; flex-direction: column; }
+    .brand h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+    .brand span {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px 18px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+      box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+      font-family: inherit;
+    }
+    .btn-add:hover { background: var(--accent-hover); box-shadow: 0 4px 14px rgba(59,130,246,0.38); transform: translateY(-1px); }
+    .btn-add:active { transform: translateY(0); }
+    .btn-add svg { width: 16px; height: 16px; }
+
+    /* ── MAIN WRAPPER ── */
+    .wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    @media(max-width: 640px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.18s;
+    }
+    .stat-card:hover { box-shadow: var(--shadow); }
+    .stat-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-value { font-size: 1.9rem; font-weight: 700; line-height: 1; }
+    .stat-card.total .stat-value { color: var(--accent); }
+    .stat-card.yes .stat-value { color: var(--green); }
+    .stat-card.no .stat-value { color: var(--red); }
+    .stat-card.pending .stat-value { color: var(--yellow); }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px; height: 16px;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text-primary);
+      transition: border-color 0.18s, box-shadow 0.18s;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .filter-select {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text-primary);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .filter-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .result-count { font-size: 0.82rem; color: var(--text-secondary); margin-left: 4px; white-space: nowrap; align-self: center; }
+
+    /* ── FILTER PANEL ── */
+    .filter-wrap { position: relative; }
+    .btn-filter { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); font-family: inherit; box-shadow: var(--shadow-sm); transition: all 0.18s; white-space: nowrap; }
+    .btn-filter svg { width: 15px; height: 15px; }
+    .btn-filter:hover { background: var(--bg); color: var(--text-primary); border-color: var(--accent); }
+    .btn-filter.active { background: var(--accent-light); color: var(--accent); border-color: #bfdbfe; }
+    .filter-badge { background: var(--accent); color: #fff; border-radius: 999px; font-size: 0.65rem; font-weight: 700; padding: 1px 6px; line-height: 1.4; }
+    .filter-panel { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 16px; min-width: 220px; z-index: 150; animation: slideUp 0.18s ease; }
+    .filter-panel.open { display: block; }
+    .filter-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .filter-panel-header strong { font-size: 0.9rem; }
+    .btn-close-filter { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--text-muted); line-height: 1; padding: 2px 6px; border-radius: 4px; }
+    .btn-close-filter:hover { color: var(--text-primary); background: var(--bg); }
+    .fp-section { margin-bottom: 14px; }
+    .fp-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 8px; }
+    .cb-label { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--text-primary); padding: 5px 0; cursor: pointer; }
+    .cb-label input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+    .btn-clear-filters { width: 100%; padding: 8px; border-radius: var(--radius-xs); font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text-secondary); font-family: inherit; transition: all 0.16s; margin-top: 4px; }
+    .btn-clear-filters:hover { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+    .recurring-info-box { background: var(--accent-light); border: 1px solid #bfdbfe; border-radius: var(--radius-xs); padding: 8px 12px; font-size: 0.8rem; color: var(--accent); line-height: 1.5; }
+
+    /* ── MODAL ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(2px);
+      animation: fadeOverlay 0.18s ease;
+    }
+    .overlay.open { display: flex; }
+    @keyframes fadeOverlay { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      width: 100%;
+      max-width: 500px;
+      animation: slideUp 0.22s ease;
+      overflow: hidden;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h2 { font-size: 1.05rem; font-weight: 700; }
+    .btn-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); border-radius: var(--radius-xs);
+      padding: 4px; line-height: 1; transition: color 0.15s, background 0.15s;
+    }
+    .btn-close:hover { color: var(--text-primary); background: var(--bg); }
+    .btn-close svg { width: 20px; height: 20px; }
+    .modal-body { padding: 20px 24px; max-height: 65vh; overflow-y: auto; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text-primary);
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media(max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      padding: 16px 24px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .btn { padding: 10px 20px; border-radius: var(--radius-xs); font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all 0.18s; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(59,130,246,0.25); }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--bg); color: var(--text-secondary); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); color: var(--text-primary); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--text-muted);
+    }
+    .empty-state svg { width: 52px; height: 52px; margin-bottom: 14px; opacity: 0.4; }
+    .empty-state p { font-size: 0.9rem; }
+    .empty-state strong { display: block; font-size: 1.05rem; color: var(--text-secondary); margin-bottom: 6px; }
+
+    /* ── ENTRY CARD ── */
+    .entries-list { display: flex; flex-direction: column; gap: 12px; }
+    .entry-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.18s, transform 0.18s;
+      animation: fadeIn 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .entry-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+    .entry-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 12px 0 0 12px;
+    }
+    .entry-card.res-yes::before { background: var(--green); }
+    .entry-card.res-no::before { background: var(--red); }
+    .entry-card.res-pending::before { background: var(--yellow); }
+
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .card-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); word-break: break-word; }
+    .card-badges { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; flex-shrink: 0; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.03em; border: 1px solid transparent;
+    }
+    .badge-green { background: var(--green-bg); color: #15803d; border-color: var(--green-border); }
+    .badge-red { background: var(--red-bg); color: #b91c1c; border-color: var(--red-border); }
+    .badge-yellow { background: var(--yellow-bg); color: #92400e; border-color: var(--yellow-border); }
+    .badge-blue { background: var(--accent-light); color: var(--accent); border-color: #bfdbfe; }
+    .badge-gray { background: #f8fafc; color: var(--text-muted); border-color: var(--border); }
+    .badge svg { width: 10px; height: 10px; }
+
+    .card-meta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; }
+    .meta-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-secondary); }
+    .meta-item svg { width: 14px; height: 14px; color: var(--text-muted); flex-shrink: 0; }
+
+    .card-notes {
+      font-size: 0.83rem; color: var(--text-secondary);
+      background: var(--bg); border-radius: var(--radius-xs);
+      padding: 8px 12px; margin-bottom: 12px;
+      border-left: 3px solid var(--border);
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .card-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .btn-icon {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: var(--radius-xs);
+      font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-secondary); font-family: inherit;
+      transition: all 0.16s;
+    }
+    .btn-icon svg { width: 13px; height: 13px; }
+    .btn-icon:hover { background: var(--bg); color: var(--text-primary); }
+    .btn-icon.danger:hover { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+
+    /* ── DELETE CONFIRM ── */
+    .confirm-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,23,42,0.5); z-index: 300;
+      align-items: center; justify-content: center; padding: 16px;
+      backdrop-filter: blur(2px);
+    }
+    .confirm-overlay.open { display: flex; }
+    .confirm-box {
+      background: var(--surface); border-radius: var(--radius);
+      box-shadow: var(--shadow-md); padding: 28px 28px 24px;
+      max-width: 360px; width: 100%; text-align: center;
+      animation: slideUp 0.2s ease;
+    }
+    .confirm-box svg { width: 40px; height: 40px; color: var(--red); margin-bottom: 12px; }
+    .confirm-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .confirm-box p { font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 20px; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+    .btn-danger { background: var(--red); color: #fff; box-shadow: 0 2px 8px rgba(239,68,68,0.25); }
+    .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 540px) {
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .btn-add { width: 100%; justify-content: center; }
+      .card-top { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <h1>TurboTech</h1>
+      <span>Outreach Tracker</span>
+    </div>
+    <button class="btn-add" id="btnOpenModal" onclick="openModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add New Entry
+    </button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="wrapper">
+
+  <!-- STATS -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card total">
+      <div class="stat-label">Total</div>
+      <div class="stat-value" id="statTotal">0</div>
+    </div>
+    <div class="stat-card yes">
+      <div class="stat-label">Interested</div>
+      <div class="stat-value" id="statYes">0</div>
+    </div>
+    <div class="stat-card no">
+      <div class="stat-label">Not Interested</div>
+      <div class="stat-value" id="statNo">0</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" id="statPending">0</div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="Search businesses…" oninput="renderList()" aria-label="Search entries"/>
+    </div>
+    <div class="filter-wrap">
+      <button class="btn-filter" id="btnFilter" onclick="toggleFilterPanel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        Filter <span class="filter-badge" id="filterBadge" style="display:none">0</span>
+      </button>
+      <div class="filter-panel" id="filterPanel">
+        <div class="filter-panel-header">
+          <strong>Filters</strong>
+          <button class="btn-close-filter" onclick="closeFilterPanel()" aria-label="Close">×</button>
+        </div>
+        <div class="fp-section">
+          <div class="fp-title">Contact Status</div>
+          <label class="cb-label"><input type="checkbox" id="fcContacted" onchange="renderList()"> Contacted</label>
+          <label class="cb-label"><input type="checkbox" id="fcNotContacted" onchange="renderList()"> Not Contacted</label>
+        </div>
+        <div class="fp-section">
+          <div class="fp-title">Response Status</div>
+          <label class="cb-label"><input type="checkbox" id="frYes" onchange="renderList()"> Interested (Yes)</label>
+          <label class="cb-label"><input type="checkbox" id="frNo" onchange="renderList()"> Not Interested (No)</label>
+          <label class="cb-label"><input type="checkbox" id="frPending" onchange="renderList()"> Pending</label>
+        </div>
+        <button class="btn-clear-filters" onclick="clearFilters()">Clear Filters</button>
+      </div>
+    </div>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+
+  <!-- LIST -->
+  <div id="entriesList" class="entries-list"></div>
+
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Add New Entry</h2>
+      <button class="btn-close" onclick="closeModal()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="fieldName">Business / School / Agency Name</label>
+        <input type="text" id="fieldName" placeholder="e.g. Lincoln High School" autocomplete="off"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fieldContacted">Contacted?</label>
+          <select id="fieldContacted">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fieldResponse">Response</label>
+          <select id="fieldResponse">
+            <option value="Pending">Pending</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fieldPhone">Phone Number (Optional)</label>
+          <input type="tel" id="fieldPhone" placeholder="e.g. +1 234 567 8900"/>
+        </div>
+        <div class="form-group">
+          <label for="fieldContactedOn">Contacted On</label>
+          <input type="date" id="fieldContactedOn"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="fieldFollowup">Follow-up Date</label>
+        <input type="date" id="fieldFollowup"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fieldRecurring">Recurring Service?</label>
+          <select id="fieldRecurring" onchange="toggleRecurring()">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div class="form-group" id="recurringTypeWrap" style="display:none">
+          <label for="fieldRecurringType">Recurring By</label>
+          <select id="fieldRecurringType" onchange="toggleRecurringType()">
+            <option value="date">Specific Date</option>
+            <option value="year">By Year (from Contacted On)</option>
+          </select>
+        </div>
+      </div>
+      <div id="recurringDateWrap" class="form-group" style="display:none">
+        <label for="fieldRecurringDate">Recurring Date</label>
+        <input type="date" id="fieldRecurringDate"/>
+      </div>
+      <div id="recurringYearInfo" style="display:none" class="form-group">
+        <div class="recurring-info-box">Next renewal = 1 year from “Contacted On” date. (e.g. called Jan 1 → next Jan 1)</div>
+      </div>
+      <div class="form-group">
+        <label for="fieldNotes">Notes</label>
+        <textarea id="fieldNotes" placeholder="Any additional notes…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="btnSave" onclick="saveEntry()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true">
+  <div class="confirm-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+    <h3>Delete Entry?</h3>
+    <p>This action cannot be undone. The entry will be permanently removed.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="btnConfirmDelete" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'turbotech_outreach_v1';
+  let entries = [];
+  let editingId = null;
+  let deletingId = null;
+
+  /* ── STORAGE ── */
+  function load() {
+    try { entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { entries = []; }
+  }
+  function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  /* ── STATS ── */
+  function updateStats() {
+    document.getElementById('statTotal').textContent = entries.length;
+    document.getElementById('statYes').textContent = entries.filter(e => e.response === 'Yes').length;
+    document.getElementById('statNo').textContent = entries.filter(e => e.response === 'No').length;
+    document.getElementById('statPending').textContent = entries.filter(e => e.response === 'Pending').length;
+  }
+
+  /* ── FILTER PANEL ── */
+  function toggleFilterPanel() {
+    document.getElementById('filterPanel').classList.toggle('open');
+    document.getElementById('btnFilter').classList.toggle('active');
+  }
+  function closeFilterPanel() {
+    document.getElementById('filterPanel').classList.remove('open');
+    document.getElementById('btnFilter').classList.remove('active');
+  }
+  function clearFilters() {
+    ['fcContacted','fcNotContacted','frYes','frNo','frPending'].forEach(id => { document.getElementById(id).checked = false; });
+    renderList();
+  }
+  function updateFilterBadge() {
+    const n = ['fcContacted','fcNotContacted','frYes','frNo','frPending'].filter(id => document.getElementById(id).checked).length;
+    const badge = document.getElementById('filterBadge');
+    badge.textContent = n; badge.style.display = n > 0 ? 'inline' : 'none';
+    document.getElementById('btnFilter').classList.toggle('active', n > 0);
+  }
+
+  /* ── FILTER LOGIC ── */
+  function getFiltered() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const fcC = document.getElementById('fcContacted').checked;
+    const fcNC = document.getElementById('fcNotContacted').checked;
+    const frY = document.getElementById('frYes').checked;
+    const frN = document.getElementById('frNo').checked;
+    const frP = document.getElementById('frPending').checked;
+    return entries.filter(e => {
+      if (q && !e.name.toLowerCase().includes(q) && !(e.notes||'').toLowerCase().includes(q) && !(e.phone||'').includes(q)) return false;
+      if (fcC || fcNC) {
+        if (fcC && !fcNC && e.contacted !== 'yes') return false;
+        if (!fcC && fcNC && e.contacted !== 'no') return false;
+      }
+      if (frY || frN || frP) {
+        if (!((frY && e.response==='Yes')||(frN && e.response==='No')||(frP && e.response==='Pending'))) return false;
+      }
+      return true;
+    });
+  }
+
+  function formatDate(d) {
+    if (!d) return '';
+    const [y, m, day] = d.split('-');
+    return `${parseInt(day)} ${'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[parseInt(m)-1]} ${y}`;
+  }
+  function getNextYearDate(ds) {
+    if (!ds) return '';
+    const d = new Date(ds); d.setFullYear(d.getFullYear()+1);
+    return d.toISOString().split('T')[0];
+  }
+  function badgeHTML(r) {
+    const m = {Yes:['badge-green',iconCheck()],No:['badge-red',iconX()],Pending:['badge-yellow',iconClock()]};
+    const [c,i] = m[r]||['badge-gray',''];
+    return `<span class="badge ${c}">${i}${r}</span>`;
+  }
+  function contactedBadge(c) {
+    return c==='yes' ? `<span class="badge badge-blue">${iconPhone()} Contacted</span>` : `<span class="badge badge-gray">${iconMinus()} Not Contacted</span>`;
+  }
+  function resClass(r) { return r==='Yes'?'res-yes':r==='No'?'res-no':'res-pending'; }
+
+  /* ── RENDER ── */
+  function renderList() {
+    updateStats(); updateFilterBadge();
+    const filtered = getFiltered();
+    const container = document.getElementById('entriesList');
+    document.getElementById('resultCount').textContent = `${filtered.length} of ${entries.length} shown`;
+    if (entries.length === 0) {
+      container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg><strong>No entries yet</strong><p>Click "Add New Entry" to get started.</p></div>`; return;
+    }
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg><strong>No results found</strong><p>Try adjusting your search or filters.</p></div>`; return;
+    }
+    container.innerHTML = filtered.map(e => {
+      const recurringDate = e.recurring==='yes' ? (e.recurringType==='year' ? getNextYearDate(e.contactedOn) : e.recurringDate) : '';
+      return `<div class="entry-card ${resClass(e.response)}" id="card-${e.id}">
+        <div class="card-top">
+          <div class="card-name">${escHtml(e.name)}</div>
+          <div class="card-badges">
+            ${contactedBadge(e.contacted)}
+            ${badgeHTML(e.response)}
+            ${e.recurring==='yes'?`<span class="badge badge-blue">${iconRecurring()} Recurring</span>`:''}
+          </div>
+        </div>
+        <div class="card-meta">
+          ${e.phone?`<div class="meta-item">${iconPhone()}<span>${escHtml(e.phone)}</span></div>`:''}
+          ${e.contactedOn?`<div class="meta-item">${iconCalendar()}<span>Called: <strong>${formatDate(e.contactedOn)}</strong></span></div>`:''}
+          ${e.followup?`<div class="meta-item">${iconCalendar()}<span>Follow-up: <strong>${formatDate(e.followup)}</strong></span></div>`:''}
+          ${recurringDate?`<div class="meta-item">${iconClock2()}<span>Next Renewal: <strong>${formatDate(recurringDate)}</strong></span></div>`:''}
+          <div class="meta-item">${iconClock2()}<span>Added ${timeAgo(e.createdAt)}</span></div>
+        </div>
+        ${e.notes?`<div class="card-notes">${escHtml(e.notes)}</div>`:''}
+        <div class="card-actions">
+          <button class="btn-icon" onclick="openEdit('${e.id}')" aria-label="Edit">${iconEdit()} Edit</button>
+          <button class="btn-icon danger" onclick="openConfirm('${e.id}')" aria-label="Delete">${iconTrash()} Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ── RECURRING TOGGLES ── */
+  function toggleRecurring() {
+    const yes = document.getElementById('fieldRecurring').value === 'yes';
+    document.getElementById('recurringTypeWrap').style.display = yes ? 'block' : 'none';
+    if (yes) toggleRecurringType();
+    else { document.getElementById('recurringDateWrap').style.display='none'; document.getElementById('recurringYearInfo').style.display='none'; }
+  }
+  function toggleRecurringType() {
+    const t = document.getElementById('fieldRecurringType').value;
+    document.getElementById('recurringDateWrap').style.display = t==='date' ? 'block' : 'none';
+    document.getElementById('recurringYearInfo').style.display = t==='year' ? 'block' : 'none';
+  }
+
+  /* ── MODAL ── */
+  function openModal(id) {
+    editingId = id || null;
+    document.getElementById('modalTitle').textContent = id ? 'Edit Entry' : 'Add New Entry';
+    document.getElementById('btnSave').textContent = id ? 'Update Entry' : 'Save Entry';
+    if (id) {
+      const e = entries.find(x=>x.id===id);
+      document.getElementById('fieldName').value = e.name;
+      document.getElementById('fieldContacted').value = e.contacted;
+      document.getElementById('fieldResponse').value = e.response;
+      document.getElementById('fieldFollowup').value = e.followup||'';
+      document.getElementById('fieldNotes').value = e.notes||'';
+      document.getElementById('fieldPhone').value = e.phone||'';
+      document.getElementById('fieldContactedOn').value = e.contactedOn||'';
+      document.getElementById('fieldRecurring').value = e.recurring||'no';
+      toggleRecurring();
+      if (e.recurringType) { document.getElementById('fieldRecurringType').value=e.recurringType; toggleRecurringType(); }
+      if (e.recurring==='yes'&&e.recurringType==='date') document.getElementById('fieldRecurringDate').value=e.recurringDate||'';
+    } else {
+      ['fieldName','fieldPhone','fieldContactedOn','fieldFollowup','fieldNotes','fieldRecurringDate'].forEach(i=>{ document.getElementById(i).value=''; });
+      document.getElementById('fieldContacted').value='no';
+      document.getElementById('fieldResponse').value='Pending';
+      document.getElementById('fieldRecurring').value='no';
+      document.getElementById('fieldRecurringType').value='date';
+      toggleRecurring();
+    }
+    document.getElementById('modalOverlay').classList.add('open');
+    setTimeout(()=>document.getElementById('fieldName').focus(), 80);
+  }
+  function openEdit(id) { openModal(id); }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); editingId=null; }
+
+  function saveEntry() {
+    const name = document.getElementById('fieldName').value.trim();
+    if (!name) { document.getElementById('fieldName').focus(); document.getElementById('fieldName').style.borderColor='var(--red)'; return; }
+    document.getElementById('fieldName').style.borderColor='';
+    const recurring = document.getElementById('fieldRecurring').value;
+    const recurringType = recurring==='yes' ? document.getElementById('fieldRecurringType').value : '';
+    const recurringDate = (recurring==='yes'&&recurringType==='date') ? document.getElementById('fieldRecurringDate').value : '';
+    const data = {
+      name, contacted:document.getElementById('fieldContacted').value,
+      response:document.getElementById('fieldResponse').value,
+      followup:document.getElementById('fieldFollowup').value,
+      notes:document.getElementById('fieldNotes').value.trim(),
+      phone:document.getElementById('fieldPhone').value.trim(),
+      contactedOn:document.getElementById('fieldContactedOn').value,
+      recurring, recurringType, recurringDate
+    };
+    if (editingId) { const idx=entries.findIndex(e=>e.id===editingId); entries[idx]={...entries[idx],...data}; }
+    else { entries.unshift({id:uid(),createdAt:Date.now(),...data}); }
+    save(); closeModal(); renderList();
+  }
+
+  /* ── DELETE ── */
+  function openConfirm(id) { deletingId=id; document.getElementById('confirmOverlay').classList.add('open'); }
+  function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); deletingId=null; }
+  function confirmDelete() { entries=entries.filter(e=>e.id!==deletingId); save(); closeConfirm(); renderList(); }
+
+  /* ── HELPERS ── */
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function timeAgo(ts) { const d=Math.floor((Date.now()-ts)/1000); if(d<60)return'just now'; if(d<3600)return`${Math.floor(d/60)}m ago`; if(d<86400)return`${Math.floor(d/3600)}h ago`; return`${Math.floor(d/86400)}d ago`; }
+
+  /* ── ICONS ── */
+  function iconCheck()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`; }
+  function iconX()        { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`; }
+  function iconClock()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`; }
+  function iconClock2()   { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`; }
+  function iconCalendar() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`; }
+  function iconPhone()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.5 10.5a19.79 19.79 0 01-3-8.59A2 2 0 012.48 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>`; }
+  function iconMinus()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>`; }
+  function iconEdit()     { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`; }
+  function iconTrash()    { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>`; }
+  function iconRecurring(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>`; }
+
+  /* ── KEYBOARD + OUTSIDE CLICK ── */
+  document.addEventListener('keydown', e => { if (e.key==='Escape') { closeModal(); closeConfirm(); closeFilterPanel(); } });
+  document.addEventListener('click', e => {
+    const wrap = document.querySelector('.filter-wrap');
+    if (document.getElementById('filterPanel').classList.contains('open') && !wrap.contains(e.target)) closeFilterPanel();
+  });
+  document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target===this) closeModal(); });
+  document.getElementById('confirmOverlay').addEventListener('click', function(e) { if (e.target===this) closeConfirm(); });
+
+  /* ── INIT ── */
+  load();
+  renderList();
+</script>
+</body>
+</html>
