@@ -1,613 +1,508 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TurboTech Outreach Tracker</title>
-  <meta name="description" content="Track outreach contacts, responses, follow-ups, and batch updates for TurboTech."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <title>TurboTech | Outreach CRM</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #edf3f8; --surface: #fff; --border: #dbe5f0; --text: #1f2937; --muted: #64748b;
-      --blue: #2563eb; --blue-soft: #e8f0ff; --green: #16a34a; --green-soft: #ecfdf3;
-      --red: #dc2626; --red-soft: #fef2f2; --amber: #d97706; --amber-soft: #fff7ed;
-      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08); --radius: 16px;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --bg-main: #f1f5f9;
+      --bg-side: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --white: #ffffff;
+      
+      /* Status Colors */
+      --green: #10b981;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
     }
-    body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 32%), linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%); color: var(--text); min-height: 100vh; line-height: 1.45; }
-    header { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,.92); border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); }
-    .header-inner, .wrapper { width: min(1100px, calc(100% - 32px)); margin: 0 auto; }
-    .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
-    .brand h1 { color: var(--blue); font-size: 1.7rem; }
-    .brand p { color: var(--muted); font-size: .84rem; text-transform: uppercase; letter-spacing: .14em; }
-    .wrapper { padding: 28px 0 56px; }
-    .btn, .icon-btn, .choice-card { border: 0; font: inherit; cursor: pointer; transition: .18s ease; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border-radius: 999px; font-weight: 600; text-decoration: none; }
-    .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 10px 20px rgba(37,99,235,.24); }
-    .btn-primary:hover { transform: translateY(-1px); background: #1d4ed8; }
-    .btn-secondary { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
-    .btn-danger { background: var(--red); color: #fff; }
-    .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 18px; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); cursor: pointer; transition: .18s ease; }
-    .stat-card:hover, .stat-card.active { transform: translateY(-2px); border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12), var(--shadow); }
-    .stat-card small { color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
-    .stat-card strong { display: block; margin-top: 8px; font-size: 2rem; }
-    .total strong { color: var(--blue); } .yes strong { color: var(--green); } .no strong { color: var(--red); } .pending strong { color: var(--amber); }
-    .toolbar, .bulk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: rgba(255,255,255,.82); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); margin-bottom: 16px; }
-    .toolbar input, .modal input, .modal select, .modal textarea { width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 11px 12px; font: inherit; color: var(--text); background: var(--surface); }
-    .toolbar input:focus, .modal input:focus, .modal select:focus, .modal textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
-    .search { flex: 1 1 260px; }
-    .toolbar .meta { margin-left: auto; color: var(--muted); font-size: .88rem; }
-    .toolbar-tools { display: flex; gap: 10px; align-items: center; margin-left: auto; position: relative; }
-    .icon-only { width: 46px; height: 46px; padding: 0; border-radius: 14px; }
-    .mini-icon { width: 16px; height: 16px; display: inline-block; flex: 0 0 auto; }
-    .filter-menu {
-      display: none;
-      position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background-color: var(--bg-main); 
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* --- SIDEBAR NAVIGATION --- */
+    aside {
       width: 260px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 24px 40px rgba(15, 23, 42, 0.14);
-      padding: 14px;
-      z-index: 40;
+      background: var(--bg-side);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 50;
+      transition: all 0.3s ease;
     }
-    .filter-menu.open { display: block; }
-    .filter-menu h4 { font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-    .tick { display: flex; align-items: center; gap: 9px; padding: 6px 0; font-size: .9rem; color: var(--text); }
-    .tick input { width: 16px; height: 16px; accent-color: var(--blue); }
-    .filter-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
-    .bulk-bar { display: none; justify-content: space-between; } .bulk-bar.open { display: flex; } .bulk-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .list { display: grid; gap: 14px; } .selection-mode .select-box { display: block; }
-    .card { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 18px 16px; box-shadow: var(--shadow); overflow: hidden; }
-    .card.selected { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12), var(--shadow); }
-    .card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 5px; }
-    .card.Yes::before { background: var(--green); } .card.No::before { background: var(--red); } .card.Pending::before { background: var(--amber); }
-    .select-box { position: absolute; top: 20px; right: 18px; width: 20px; height: 20px; display: none; }
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding-right: 34px; }
-    .card h3 { font-size: 1.05rem; margin-bottom: 10px; }
-    .badges, .actions, .meta-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; font-size: .74rem; font-weight: 700; border: 1px solid transparent; }
-    .badge.blue { background: var(--blue-soft); color: var(--blue); border-color: #bfd3ff; } .badge.green { background: var(--green-soft); color: var(--green); border-color: #bbf7d0; } .badge.red { background: var(--red-soft); color: var(--red); border-color: #fecaca; } .badge.amber { background: var(--amber-soft); color: var(--amber); border-color: #fed7aa; }
-    .meta-row { margin: 12px 0; color: var(--muted); font-size: .86rem; }
-    .notes { background: #f8fafc; border-left: 3px solid var(--border); padding: 10px 12px; border-radius: 10px; color: #475569; margin-bottom: 12px; white-space: pre-wrap; }
-    .icon-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: var(--surface); color: var(--muted); border: 1px solid var(--border); text-decoration: none; font-weight: 600; font-size: .82rem; }
-    .icon-btn:hover { background: #f8fbff; color: var(--text); border-color: #b8cdfa; } .icon-btn.call:hover { background: var(--green-soft); color: var(--green); border-color: #86efac; } .icon-btn.wa:hover { background: #ecfdf5; color: #15803d; border-color: #86efac; } .icon-btn.delete:hover { background: var(--red-soft); color: var(--red); border-color: #fda4af; }
-    .empty { text-align: center; padding: 56px 18px; border: 1px dashed var(--border); border-radius: var(--radius); color: var(--muted); background: rgba(255,255,255,.7); }
-    .overlay { position: fixed; inset: 0; background: rgba(15,23,42,.48); display: none; align-items: center; justify-content: center; padding: 18px; z-index: 100; }
-    .overlay.open { display: flex; }
-    .modal { width: min(760px, 100%); background: var(--surface); border-radius: 22px; overflow: hidden; box-shadow: 0 20px 50px rgba(15,23,42,.24); }
-    .modal-head, .modal-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--border); }
-    .modal-foot { border-top: 1px solid var(--border); border-bottom: 0; justify-content: flex-end; }
-    .modal-body { padding: 20px; max-height: 72vh; overflow: auto; }
-    .close { width: 40px; height: 40px; border-radius: 999px; background: #f8fafc; border: 1px solid var(--border); color: var(--muted); cursor: pointer; }
-    .choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
-    .choice-card { text-align: left; border: 1px solid var(--border); border-radius: 18px; padding: 18px; background: linear-gradient(180deg,#fff 0%,#f7fbff 100%); box-shadow: var(--shadow); }
-    .choice-card:hover { border-color: #bfd3ff; transform: translateY(-2px); }
-    .choice-card strong { display: block; font-size: 1rem; margin-bottom: 8px; }
-    .choice-card p, .hint { color: var(--muted); font-size: .88rem; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
-    .field-wrap { display: grid; gap: 6px; margin-bottom: 14px; }
-    .field-wrap label { color: var(--muted); font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
-    textarea { min-height: 86px; resize: vertical; }
-    .helper { padding: 12px; border-radius: 12px; background: var(--blue-soft); color: var(--blue); font-size: .86rem; margin-bottom: 14px; }
-    @media (max-width: 860px) { .stats { grid-template-columns: repeat(2, minmax(0,1fr)); } .choice-grid, .grid-2 { grid-template-columns: 1fr; } .toolbar-tools, .toolbar .meta { width: 100%; margin-left: 0; justify-content: flex-start; } }
-    @media (max-width: 620px) { .header-inner { flex-direction: column; align-items: stretch; } .btn { width: 100%; } .stats { grid-template-columns: 1fr; } .modal-head, .modal-foot, .modal-body { padding: 16px; } }
+    .brand { padding: 32px 24px; display: flex; align-items: center; gap: 12px; }
+    .brand-logo { 
+      background: linear-gradient(135deg, var(--primary), #1d4ed8); 
+      color: white; padding: 10px; border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .nav-links { flex: 1; padding: 0 16px; }
+    .nav-item { 
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px; 
+      text-decoration: none; color: var(--text-muted); font-weight: 500;
+      border-radius: var(--radius-md); transition: 0.2s; cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .nav-item:hover { background: #f8fafc; color: var(--primary); }
+    .nav-item.active { background: var(--primary-soft); color: var(--primary); }
+
+    /* --- MAIN CONTENT --- */
+    main { margin-left: 260px; flex: 1; padding: 40px; width: calc(100% - 260px); }
+    
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .search-wrapper { position: relative; width: 450px; }
+    .search-wrapper input { 
+      width: 100%; padding: 14px 14px 14px 45px; border-radius: var(--radius-md);
+      border: 1px solid var(--border); outline: none; background: var(--white);
+      transition: all 0.2s; font-size: 0.95rem;
+    }
+    .search-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+    .search-wrapper i { position: absolute; left: 16px; top: 15px; color: var(--text-muted); }
+
+    /* --- DASHBOARD STATS --- */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+    .stat-card { 
+      background: var(--white); padding: 24px; border-radius: var(--radius-lg); 
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .stat-card small { color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card h2 { font-size: 2rem; margin-top: 10px; font-weight: 700; color: var(--text-main); }
+
+    /* --- TABLE UI --- */
+    .data-card { 
+      background: var(--white); border-radius: var(--radius-lg); 
+      border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm);
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #f8fafc; padding: 18px; font-size: 0.8rem; color: var(--text-muted); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 18px; border-bottom: 1px solid var(--border); font-size: 0.95rem; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: #fcfcfd; }
+
+    /* --- BADGES --- */
+    .badge { 
+      padding: 6px 12px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; 
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .badge-yes { background: #ecfdf5; color: var(--green); }
+    .badge-no { background: #fef2f2; color: var(--red); }
+    .badge-pending { background: #fffbeb; color: var(--amber); }
+
+    /* --- BUTTONS --- */
+    .btn { 
+      padding: 12px 24px; border-radius: var(--radius-md); border: none; 
+      cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; 
+      transition: all 0.2s; font-size: 0.9rem;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-main); }
+    .btn-outline:hover { background: #f8fafc; }
+    .btn-icon { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: white; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; cursor: pointer; }
+    .btn-icon:hover { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+
+    /* --- MODAL --- */
+    .modal-overlay { 
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); 
+      backdrop-filter: blur(8px); display: none; align-items: center; 
+      justify-content: center; z-index: 1000; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal { 
+      background: white; width: 100%; max-width: 650px; border-radius: 20px; 
+      max-height: 90vh; overflow-y: auto; padding: 40px; box-shadow: var(--shadow-lg);
+    }
+    .form-group { margin-bottom: 24px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; }
+    .form-group input, .form-group select, .form-group textarea { 
+      width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; outline: none; font-family: inherit; font-size: 1rem;
+    }
+    .form-group input:focus { border-color: var(--primary); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* --- TOAST NOTIFICATION --- */
+    #toast {
+      position: fixed; bottom: 30px; right: 30px; padding: 16px 28px;
+      background: #0f172a; color: white; border-radius: 12px;
+      box-shadow: var(--shadow-lg); transform: translateY(150px);
+      transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+    }
+    #toast.show { transform: translateY(0); }
+
+    /* --- RESPONSIVE DESIGN --- */
+    @media (max-width: 1100px) {
+      aside { width: 80px; }
+      aside .brand span, aside .nav-item span { display: none; }
+      main { margin-left: 80px; width: calc(100% - 80px); padding: 20px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .search-wrapper { width: 100%; }
+      .header-row { flex-direction: column; gap: 20px; align-items: stretch; }
+      th:nth-child(3), td:nth-child(3) { display: none; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-inner">
-      <div class="brand"><h1>TurboTech</h1><p>Outreach Tracker</p></div>
-      <button class="btn btn-primary" type="button" onclick="openChooser()">Add New Entry</button>
+
+  <!-- Navigation -->
+  <aside>
+    <div class="brand">
+      <div class="brand-logo"><i data-lucide="rocket"></i></div>
+      <span><strong>TurboTech</strong></span>
     </div>
-  </header>
-
-  <main class="wrapper">
-    <section class="stats">
-      <article class="stat-card total active" data-stat="all" onclick="setQuickFilter('all')"><small>Total</small><strong id="statTotal">0</strong></article>
-      <article class="stat-card yes" data-stat="Yes" onclick="setQuickFilter('Yes')"><small>Interested</small><strong id="statYes">0</strong></article>
-      <article class="stat-card no" data-stat="No" onclick="setQuickFilter('No')"><small>Not Interested</small><strong id="statNo">0</strong></article>
-      <article class="stat-card pending" data-stat="Pending" onclick="setQuickFilter('Pending')"><small>Pending</small><strong id="statPending">0</strong></article>
-    </section>
-
-    <section class="toolbar">
-      <div class="field search"><input id="searchInput" type="text" placeholder="Search business, notes, or phone" oninput="render()"></div>
-      <div class="toolbar-tools">
-        <button class="btn btn-secondary icon-only" id="filterButton" type="button" onclick="toggleFilterMenu()" aria-label="Open filters">
-          <svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-        </button>
-        <button class="btn btn-secondary" type="button" onclick="toggleSelectionMode()"><svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 12 11 14 15 10"/></svg><span id="selectionToggleText">Enable Multi Select</span></button>
-        <button class="btn btn-secondary" type="button" onclick="clearAllFilters()"><svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>Clear</button>
-        <div class="filter-menu" id="filterMenu">
-          <h4>Contact Status</h4>
-          <label class="tick"><input type="checkbox" id="fcYes" onchange="render()"> Contacted</label>
-          <label class="tick"><input type="checkbox" id="fcNo" onchange="render()"> Not Contacted</label>
-          <h4 style="margin-top:10px">Response</h4>
-          <label class="tick"><input type="checkbox" id="frYes" onchange="render()"> Yes</label>
-          <label class="tick"><input type="checkbox" id="frNo" onchange="render()"> No</label>
-          <label class="tick"><input type="checkbox" id="frPending" onchange="render()"> Pending</label>
-          <div class="filter-actions">
-            <button class="btn btn-secondary" type="button" onclick="clearFilterTicks()">Reset</button>
-          </div>
-        </div>
+    <div class="nav-links">
+      <div class="nav-item active" onclick="location.reload()">
+        <i data-lucide="layout-grid"></i> <span>Dashboard</span>
       </div>
-      <div class="meta" id="resultMeta">0 shown</div>
-    </section>
+      <div class="nav-item" onclick="openModal()">
+        <i data-lucide="user-plus"></i> <span>Add Lead</span>
+      </div>
+      <div class="nav-item" onclick="exportToCSV()">
+        <i data-lucide="file-text"></i> <span>Export CSV</span>
+      </div>
+    </div>
+  </aside>
 
-    <section class="bulk-bar" id="bulkBar">
-      <div id="bulkText">0 selected</div>
-      <div class="bulk-actions">
-        <button class="btn btn-secondary" type="button" onclick="toggleSelectAllVisible()">Select All Visible</button>
-        <button class="btn btn-secondary" type="button" onclick="editSelected()">Edit Selected</button>
-        <button class="btn btn-danger" type="button" onclick="confirmBulkDelete()">Delete Selected</button>
+  <!-- Main View -->
+  <main>
+    <header class="header-row">
+      <div class="search-wrapper">
+        <i data-lucide="search"></i>
+        <input type="text" id="searchInput" placeholder="Search leads by name, phone, or notes..." oninput="filterLeads()">
+      </div>
+      <button class="btn btn-primary" onclick="openModal()">
+        <i data-lucide="plus"></i> Add New Lead
+      </button>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <small>Total Database</small>
+        <h2 id="statTotal">0</h2>
+      </div>
+      <div class="stat-card">
+        <small>Interested (Yes)</small>
+        <h2 id="statYes" style="color: var(--green)">0</h2>
+      </div>
+      <div class="stat-card">
+        <small>Pending Follow-up</small>
+        <h2 id="statPending" style="color: var(--amber)">0</h2>
+      </div>
+      <div class="stat-card">
+        <small>Conversion Rate</small>
+        <h2 id="statRate">0%</h2>
       </div>
     </section>
 
-    <section class="list" id="list"></section>
+    <div class="data-card">
+      <table id="leadsTable">
+        <thead>
+          <tr>
+            <th>Business Details</th>
+            <th>Status</th>
+            <th>Phone Number</th>
+            <th>Follow-up</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody">
+          <!-- Firebase data injected here -->
+        </tbody>
+      </table>
+    </div>
   </main>
-  <div class="overlay" id="chooserOverlay">
+
+  <!-- Add/Edit Lead Modal -->
+  <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <div class="modal-head">
-        <div><h2>Choose Entry Type</h2><p class="hint">Manual entry is shown first, then CSV import.</p></div>
-        <button class="close" type="button" onclick="closeOverlay('chooserOverlay')">x</button>
+      <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 id="modalTitle">Add New Lead</h2>
+        <button class="btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button>
       </div>
-      <div class="modal-body">
-        <div class="choice-grid">
-          <button class="choice-card" type="button" onclick="openForm()"><strong>1. Manual Entry</strong><p>Add a single business, school, or agency using the form.</p></button>
-          <button class="choice-card" type="button" onclick="openCsvModal()"><strong>2. CSV Entry</strong><p>Import multiple entries from a CSV file or pasted CSV text.</p></button>
+      
+      <form id="leadForm">
+        <input type="hidden" id="leadId">
+        
+        <div class="form-group">
+          <label>Business / Institution Name</label>
+          <input type="text" id="name" required placeholder="Enter salon, school or agency name">
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="overlay" id="formOverlay">
-    <div class="modal">
-      <div class="modal-head">
-        <div><h2 id="formTitle">Add New Entry</h2><p class="hint">Fill the details for one contact record.</p></div>
-        <button class="close" type="button" onclick="closeOverlay('formOverlay')">x</button>
-      </div>
-      <div class="modal-body">
-        <div class="field-wrap"><label for="fieldName">Business / School / Agency Name</label><input id="fieldName" type="text" placeholder="e.g. Lincoln High School" /></div>
         <div class="grid-2">
-          <div class="field-wrap"><label for="fieldContacted">Contacted?</label><select id="fieldContacted"><option value="no">No</option><option value="yes">Yes</option></select></div>
-          <div class="field-wrap"><label for="fieldResponse">Response</label><select id="fieldResponse"><option value="Pending">Pending</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
-        </div>
-        <div class="grid-2">
-          <div class="field-wrap"><label for="fieldPhone">Phone Number</label><input id="fieldPhone" type="tel" placeholder="e.g. +91 9876543210" /></div>
-          <div class="field-wrap"><label for="fieldContactedOn">Contacted On</label><input id="fieldContactedOn" type="date" /></div>
-        </div>
-        <div class="grid-2">
-          <div class="field-wrap"><label for="fieldFollowup">Follow-up Date</label><input id="fieldFollowup" type="date" /></div>
-          <div class="field-wrap"><label for="fieldRecurring">Recurring Service?</label><select id="fieldRecurring" onchange="toggleRecurringFields()"><option value="no">No</option><option value="yes">Yes</option></select></div>
-        </div>
-        <div class="grid-2" id="recurringBlock" style="display:none">
-          <div class="field-wrap"><label for="fieldRecurringType">Recurring By</label><select id="fieldRecurringType" onchange="toggleRecurringFields()"><option value="date">Specific Date</option><option value="year">By Year</option></select></div>
-          <div class="field-wrap" id="recurringDateWrap"><label for="fieldRecurringDate">Recurring Date</label><input id="fieldRecurringDate" type="date" /></div>
-        </div>
-        <div class="helper" id="recurringHint" style="display:none">Next renewal will be calculated as one year from the Contacted On date.</div>
-        <div class="field-wrap"><label for="fieldNotes">Notes</label><textarea id="fieldNotes" placeholder="Any additional notes..."></textarea></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-secondary" type="button" onclick="closeOverlay('formOverlay')">Cancel</button>
-        <button class="btn btn-primary" type="button" onclick="saveEntry()">Save Entry</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay" id="csvOverlay">
-    <div class="modal">
-      <div class="modal-head">
-        <div><h2>CSV Entry</h2><p class="hint">Import from a CSV file or paste CSV text directly.</p></div>
-        <button class="close" type="button" onclick="closeOverlay('csvOverlay')">x</button>
-      </div>
-      <div class="modal-body">
-        <div class="helper">Supported headers: <strong>name, contacted, response, phone, contactedOn, followup, recurring, recurringType, recurringDate, notes</strong></div>
-        <div class="field-wrap"><label for="csvFile">CSV File</label><input id="csvFile" type="file" accept=".csv,text/csv" /></div>
-        <div class="field-wrap"><label for="csvText">Or Paste CSV</label><textarea id="csvText" placeholder="name,contacted,response,phone&#10;Turbo School,yes,Pending,+91 9876543210"></textarea></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-secondary" type="button" onclick="closeOverlay('csvOverlay')">Cancel</button>
-        <button class="btn btn-primary" type="button" onclick="importCsv()">Import Entries</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay" id="batchOverlay">
-    <div class="modal">
-      <div class="modal-head">
-        <div><h2>Batch Edit Selected Entries</h2><p class="hint">Update all selected entries together. Leave anything blank to keep it unchanged.</p></div>
-        <button class="close" type="button" onclick="closeOverlay('batchOverlay')">x</button>
-      </div>
-      <div class="modal-body">
-        <div class="grid-2">
-          <div class="field-wrap"><label for="batchContacted">Contacted?</label><select id="batchContacted"><option value="">No Change</option><option value="yes">Yes</option><option value="no">No</option></select></div>
-          <div class="field-wrap"><label for="batchResponse">Response</label><select id="batchResponse"><option value="">No Change</option><option value="Yes">Yes</option><option value="No">No</option><option value="Pending">Pending</option></select></div>
-        </div>
-        <div class="field-wrap"><label for="batchFollowup">Follow-up Date</label><input id="batchFollowup" type="date" /></div>
-        <div class="field-wrap"><label for="batchNotes">Append Notes</label><textarea id="batchNotes" placeholder="This text will be appended to every selected record"></textarea></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-secondary" type="button" onclick="closeOverlay('batchOverlay')">Cancel</button>
-        <button class="btn btn-primary" type="button" onclick="applyBatchEdit()">Apply Changes</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay" id="confirmOverlay">
-    <div class="modal" style="max-width:460px">
-      <div class="modal-head">
-        <div><h2 id="confirmTitle">Delete Entry?</h2><p class="hint" id="confirmText">This action cannot be undone.</p></div>
-        <button class="close" type="button" onclick="closeOverlay('confirmOverlay')">x</button>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-secondary" type="button" onclick="closeOverlay('confirmOverlay')">Cancel</button>
-        <button class="btn btn-danger" type="button" onclick="performDelete()">Delete</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const STORAGE_KEY = 'turbotech_outreach_v3';
-    let entries = [];
-    let editingId = null;
-    let quickFilter = 'all';
-    let selectionMode = false;
-    let selected = new Set();
-    let pendingDelete = { mode: 'single', ids: [] };
-    const $ = id => document.getElementById(id);
-
-    function load() {
-      try { entries = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-      catch { entries = []; }
-    }
-    function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
-    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
-
-    function openChooser() { $('chooserOverlay').classList.add('open'); }
-    function closeOverlay(id) { $(id).classList.remove('open'); if (id === 'formOverlay') editingId = null; }
-    function openForm(id = null) {
-      closeOverlay('chooserOverlay');
-      editingId = id;
-      $('formTitle').textContent = id ? 'Edit Entry' : 'Add New Entry';
-      if (id) {
-        const item = entries.find(e => e.id === id);
-        $('fieldName').value = item.name;
-        $('fieldContacted').value = item.contacted;
-        $('fieldResponse').value = item.response;
-        $('fieldPhone').value = item.phone || '';
-        $('fieldContactedOn').value = item.contactedOn || '';
-        $('fieldFollowup').value = item.followup || '';
-        $('fieldRecurring').value = item.recurring || 'no';
-        $('fieldRecurringType').value = item.recurringType || 'date';
-        $('fieldRecurringDate').value = item.recurringDate || '';
-        $('fieldNotes').value = item.notes || '';
-      } else {
-        ['fieldName','fieldPhone','fieldContactedOn','fieldFollowup','fieldRecurringDate','fieldNotes'].forEach(id2 => $(id2).value = '');
-        $('fieldContacted').value = 'no';
-        $('fieldResponse').value = 'Pending';
-        $('fieldRecurring').value = 'no';
-        $('fieldRecurringType').value = 'date';
-      }
-      toggleRecurringFields();
-      $('formOverlay').classList.add('open');
-      setTimeout(() => $('fieldName').focus(), 80);
-    }
-    function openCsvModal() { closeOverlay('chooserOverlay'); $('csvOverlay').classList.add('open'); }
-    function toggleRecurringFields() {
-      const recurring = $('fieldRecurring').value === 'yes';
-      const byYear = $('fieldRecurringType').value === 'year';
-      $('recurringBlock').style.display = recurring ? 'grid' : 'none';
-      $('recurringDateWrap').style.display = recurring && !byYear ? 'grid' : 'none';
-      $('recurringHint').style.display = recurring && byYear ? 'block' : 'none';
-    }
-    function getFormData() {
-      const name = $('fieldName').value.trim();
-      if (!name) { $('fieldName').focus(); return null; }
-      const recurring = $('fieldRecurring').value;
-      const recurringType = recurring === 'yes' ? $('fieldRecurringType').value : '';
-      return {
-        name,
-        contacted: $('fieldContacted').value,
-        response: $('fieldResponse').value,
-        phone: $('fieldPhone').value.trim(),
-        contactedOn: $('fieldContactedOn').value,
-        followup: $('fieldFollowup').value,
-        recurring,
-        recurringType,
-        recurringDate: recurring === 'yes' && recurringType === 'date' ? $('fieldRecurringDate').value : '',
-        notes: $('fieldNotes').value.trim()
-      };
-    }
-    function saveEntry() {
-      const data = getFormData();
-      if (!data) return;
-      if (editingId) {
-        const index = entries.findIndex(e => e.id === editingId);
-        entries[index] = { ...entries[index], ...data };
-      } else {
-        entries.unshift({ id: uid(), createdAt: Date.now(), ...data });
-      }
-      persist();
-      closeOverlay('formOverlay');
-      render();
-    }
-
-    function setQuickFilter(status) { quickFilter = status; render(); }
-    function toggleFilterMenu() {
-      $('filterMenu').classList.toggle('open');
-      $('filterButton').classList.toggle('active');
-    }
-    function closeFilterMenu() {
-      $('filterMenu').classList.remove('open');
-      $('filterButton').classList.remove('active');
-    }
-    function clearFilterTicks() {
-      ['fcYes','fcNo','frYes','frNo','frPending'].forEach(id => $(id).checked = false);
-      render();
-    }
-    function clearAllFilters() {
-      quickFilter = 'all';
-      $('searchInput').value = '';
-      clearFilterTicks();
-      closeFilterMenu();
-      render();
-    }
-    function getFilteredEntries() {
-      const q = $('searchInput').value.trim().toLowerCase();
-      const contactYes = $('fcYes').checked;
-      const contactNo = $('fcNo').checked;
-      const responseYes = $('frYes').checked;
-      const responseNo = $('frNo').checked;
-      const responsePending = $('frPending').checked;
-      return entries.filter(entry => {
-        if (quickFilter !== 'all' && entry.response !== quickFilter) return false;
-        if (contactYes || contactNo) {
-          if (contactYes && !contactNo && entry.contacted !== 'yes') return false;
-          if (!contactYes && contactNo && entry.contacted !== 'no') return false;
-        }
-        if (responseYes || responseNo || responsePending) {
-          if (!((responseYes && entry.response === 'Yes') || (responseNo && entry.response === 'No') || (responsePending && entry.response === 'Pending'))) return false;
-        }
-        if (!q) return true;
-        return [entry.name, entry.notes || '', entry.phone || '', entry.followup || '', entry.contactedOn || ''].join(' ').toLowerCase().includes(q);
-      });
-    }
-    function updateStats() {
-      $('statTotal').textContent = entries.length;
-      $('statYes').textContent = entries.filter(e => e.response === 'Yes').length;
-      $('statNo').textContent = entries.filter(e => e.response === 'No').length;
-      $('statPending').textContent = entries.filter(e => e.response === 'Pending').length;
-      document.querySelectorAll('.stat-card').forEach(card => {
-        card.classList.toggle('active', card.dataset.stat === quickFilter || (quickFilter === 'all' && card.dataset.stat === 'all'));
-      });
-    }
-
-    function toggleSelectionMode() {
-      selectionMode = !selectionMode;
-      if (!selectionMode) selected.clear();
-      render();
-    }
-    function toggleSelect(id) {
-      if (selected.has(id)) selected.delete(id); else selected.add(id);
-      updateBulkBar();
-      renderCardsOnly();
-    }
-    function toggleSelectAllVisible() {
-      const visibleIds = getFilteredEntries().map(entry => entry.id);
-      const allSelected = visibleIds.length && visibleIds.every(id => selected.has(id));
-      visibleIds.forEach(id => { if (allSelected) selected.delete(id); else selected.add(id); });
-      render();
-    }
-    function updateBulkBar() {
-      $('bulkBar').classList.toggle('open', selectionMode);
-      $('selectionToggleText').textContent = selectionMode ? 'Disable Multi Select' : 'Enable Multi Select';
-      $('bulkText').textContent = `${selected.size} selected`;
-    }
-    function editSelected() {
-      if (selected.size === 0) return;
-      if (selected.size === 1) { openForm([...selected][0]); return; }
-      $('batchContacted').value = '';
-      $('batchResponse').value = '';
-      $('batchFollowup').value = '';
-      $('batchNotes').value = '';
-      $('batchOverlay').classList.add('open');
-    }
-    function applyBatchEdit() {
-      const contact = $('batchContacted').value;
-      const response = $('batchResponse').value;
-      const followup = $('batchFollowup').value;
-      const note = $('batchNotes').value.trim();
-      entries = entries.map(entry => {
-        if (!selected.has(entry.id)) return entry;
-        return {
-          ...entry,
-          contacted: contact || entry.contacted,
-          response: response || entry.response,
-          followup: followup || entry.followup,
-          notes: note ? [entry.notes, note].filter(Boolean).join('\n') : entry.notes
-        };
-      });
-      persist();
-      closeOverlay('batchOverlay');
-      render();
-    }
-
-    function confirmDelete(id) {
-      pendingDelete = { mode: 'single', ids: [id] };
-      $('confirmTitle').textContent = 'Delete Entry?';
-      $('confirmText').textContent = 'This action cannot be undone. The entry will be permanently removed.';
-      $('confirmOverlay').classList.add('open');
-    }
-    function confirmBulkDelete() {
-      if (!selected.size) return;
-      pendingDelete = { mode: 'bulk', ids: [...selected] };
-      $('confirmTitle').textContent = 'Delete Selected Entries?';
-      $('confirmText').textContent = `This will permanently remove ${selected.size} selected ${selected.size === 1 ? 'entry' : 'entries'}.`;
-      $('confirmOverlay').classList.add('open');
-    }
-    function performDelete() {
-      entries = entries.filter(entry => !pendingDelete.ids.includes(entry.id));
-      if (pendingDelete.mode === 'bulk') { selected.clear(); selectionMode = false; }
-      persist();
-      closeOverlay('confirmOverlay');
-      render();
-    }
-
-    function sanitizePhone(value) { return String(value || '').replace(/[^\d+]/g, ''); }
-    function whatsappPhone(value) { return String(value || '').replace(/\D/g, ''); }
-    function formatDate(value) {
-      if (!value) return '';
-      const [year, month, day] = value.split('-');
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return `${Number(day)} ${months[Number(month) - 1]} ${year}`;
-    }
-    function nextRenewal(entry) {
-      if (entry.recurring !== 'yes') return '';
-      if (entry.recurringType === 'date') return entry.recurringDate || '';
-      if (!entry.contactedOn) return '';
-      const date = new Date(entry.contactedOn);
-      date.setFullYear(date.getFullYear() + 1);
-      return date.toISOString().split('T')[0];
-    }
-    function timeAgo(value) {
-      const seconds = Math.floor((Date.now() - value) / 1000);
-      if (seconds < 60) return 'just now';
-      if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-      if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-      return `${Math.floor(seconds / 86400)}d ago`;
-    }
-    function esc(text) {
-      return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-    function renderBadges(entry) {
-      const responseClass = entry.response === 'Yes' ? 'green' : entry.response === 'No' ? 'red' : 'amber';
-      const contactLabel = entry.contacted === 'yes' ? 'Contacted' : 'Not Contacted';
-      const contactClass = entry.contacted === 'yes' ? 'blue' : 'amber';
-      return `<span class="badge ${contactClass}">${contactLabel}</span><span class="badge ${responseClass}">${entry.response}</span>${entry.recurring === 'yes' ? '<span class="badge blue">Recurring</span>' : ''}`;
-    }
-    function renderCardsOnly() {
-      const list = $('list');
-      const filtered = getFilteredEntries();
-      if (!filtered.length) {
-        list.innerHTML = `<div class="empty"><h3>No matching entries</h3><p>Try adjusting the search or filter values.</p></div>`;
-        return;
-      }
-      list.classList.toggle('selection-mode', selectionMode);
-      list.innerHTML = filtered.map(entry => {
-        const tel = sanitizePhone(entry.phone);
-        const wa = whatsappPhone(entry.phone);
-        const renewal = nextRenewal(entry);
-        return `<article class="card ${entry.response} ${selected.has(entry.id) ? 'selected' : ''}">
-          <input class="select-box" type="checkbox" ${selected.has(entry.id) ? 'checked' : ''} onchange="toggleSelect('${entry.id}')">
-          <div class="card-top"><div><h3>${esc(entry.name)}</h3><div class="badges">${renderBadges(entry)}</div></div></div>
-          <div class="meta-row">
-            ${entry.phone ? `<span>Phone: <strong>${esc(entry.phone)}</strong></span>` : ''}
-            ${entry.contactedOn ? `<span>Contacted: <strong>${formatDate(entry.contactedOn)}</strong></span>` : ''}
-            ${entry.followup ? `<span>Follow-up: <strong>${formatDate(entry.followup)}</strong></span>` : ''}
-            ${renewal ? `<span>Renewal: <strong>${formatDate(renewal)}</strong></span>` : ''}
-            <span>Added ${timeAgo(entry.createdAt)}</span>
+          <div class="form-group">
+            <label>Contacted Status</label>
+            <select id="contacted">
+              <option value="yes">Yes, Contacted</option>
+              <option value="no">Not Contacted Yet</option>
+            </select>
           </div>
-          ${entry.notes ? `<div class="notes">${esc(entry.notes)}</div>` : ''}
-          <div class="actions">
-            ${tel ? `<a class="icon-btn call" href="tel:${tel}"><svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.5 10.5a19.79 19.79 0 0 1-3-8.59A2 2 0 0 1 2.48 0h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L6.91 7.91a16 16 0 0 0 6.18 6.18l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 14.92z"/></svg>Call</a>` : ''}
-            ${wa ? `<a class="icon-btn wa" href="https://wa.me/${wa}" target="_blank" rel="noopener noreferrer"><svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.46 0 .12 5.34.12 11.94c0 2.1.54 4.14 1.56 5.94L0 24l6.3-1.62a11.9 11.9 0 0 0 5.76 1.5h.06c6.6 0 11.94-5.34 11.94-11.94 0-3.18-1.26-6.18-3.54-8.46z"/><path d="M8.76 7.2c-.24-.54-.48-.54-.72-.54h-.66c-.24 0-.66.12-1.02.48-.36.36-1.38 1.32-1.38 3.24 0 1.92 1.41 3.78 1.62 4.05.18.24 3.03 4.86 7.53 6.6 3.75 1.47 4.5 1.17 5.31 1.08.81-.09 2.58-1.05 2.94-2.04.36-.99.36-1.83.24-2.01-.12-.18-.45-.27-.93-.51-.48-.24-2.82-1.38-3.24-1.53-.42-.15-.72-.24-1.02.24-.3.48-1.17 1.53-1.44 1.83-.27.3-.54.33-1.02.12-.48-.24-2.01-.75-3.84-2.4-1.41-1.26-2.37-2.82-2.64-3.3-.27-.48-.03-.75.21-.99.21-.21.48-.54.72-.81.24-.27.33-.45.48-.75.15-.3.06-.57-.03-.81-.09-.24-.87-2.1-1.2-2.88z"/></svg>WhatsApp</a>` : ''}
-            <button class="icon-btn" type="button" onclick="openForm('${entry.id}')"><svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>
-            <button class="icon-btn delete" type="button" onclick="confirmDelete('${entry.id}')"><svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>Delete</button>
+          <div class="form-group">
+            <label>Response Level</label>
+            <select id="response">
+              <option value="Pending">Pending</option>
+              <option value="Yes">Interested (Yes)</option>
+              <option value="No">Not Interested (No)</option>
+            </select>
           </div>
-        </article>`;
-      }).join('');
-    }
-    function render() {
-      updateStats();
-      updateBulkBar();
-      renderCardsOnly();
-      $('resultMeta').textContent = `${getFilteredEntries().length} of ${entries.length} shown`;
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="+91 00000-00000">
+          </div>
+          <div class="form-group">
+            <label>Contacted Date</label>
+            <input type="date" id="contactedOn">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Follow-up Date</label>
+            <input type="date" id="followup">
+          </div>
+          <div class="form-group">
+            <label>Recurring Type</label>
+            <select id="recurringType">
+              <option value="none">One-time</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Conversation Notes</label>
+          <textarea id="notes" rows="4" placeholder="Briefly describe the outcome of the call..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal()">Discard</button>
+          <button type="submit" class="btn btn-primary">Save Lead Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast">Operation successful</div>
+
+  <!-- FIREBASE LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { 
+      getFirestore, collection, addDoc, onSnapshot, 
+      query, orderBy, doc, updateDoc, deleteDoc 
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+    // Your provided configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDsM9-jrnVjV9x8vZF42ayIuMspf1nhEbs",
+      authDomain: "turbotech-tracker.firebaseapp.com",
+      projectId: "turbotech-tracker",
+      storageBucket: "turbotech-tracker.firebasestorage.app",
+      messagingSenderId: "563685474940",
+      appId: "1:563685474940:web:61b8278c8e70b7286dbff9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const leadsRef = collection(db, "leads");
+
+    let leadsData = [];
+
+    // --- REAL-TIME LISTENER ---
+    const q = query(leadsRef, orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      leadsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderUI(leadsData);
+      calculateStats();
+    });
+
+    // --- UI RENDERING ---
+    function renderUI(leads) {
+      const tbody = document.getElementById('leadsBody');
+      tbody.innerHTML = leads.map(lead => `
+        <tr>
+          <td>
+            <div style="font-weight: 700; color: var(--text-main); font-size: 1rem;">${lead.name}</div>
+            <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">${lead.notes ? lead.notes.substring(0, 45) + '...' : 'No notes added'}</div>
+          </td>
+          <td>
+            <span class="badge badge-${lead.response.toLowerCase()}">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: currentColor;"></span>
+              ${lead.response}
+            </span>
+          </td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+               <i data-lucide="phone" style="width:14px; color:var(--text-muted)"></i>
+               ${lead.phone || '—'}
+            </div>
+          </td>
+          <td>
+             <div style="font-weight: 500; ${isPast(lead.followup) ? 'color: var(--red)' : ''}">
+               ${lead.followup || '—'}
+             </div>
+          </td>
+          <td>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+              <button class="btn-icon" onclick="editLead('${lead.id}')" title="Edit"><i data-lucide="pencil" style="width:16px"></i></button>
+              <button class="btn-icon" onclick="deleteLead('${lead.id}')" title="Delete" style="color: var(--red)"><i data-lucide="trash-2" style="width:16px"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
     }
 
-    function parseCsvLine(line) {
-      const out = [];
-      let value = '';
-      let inQuotes = false;
-      for (let i = 0; i < line.length; i += 1) {
-        const char = line[i];
-        if (char === '"') {
-          if (inQuotes && line[i + 1] === '"') { value += '"'; i += 1; }
-          else inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          out.push(value.trim());
-          value = '';
-        } else value += char;
-      }
-      out.push(value.trim());
-      return out;
+    function isPast(dateStr) {
+        if(!dateStr) return false;
+        return new Date(dateStr) < new Date().setHours(0,0,0,0);
     }
-    function normalizeCsvRow(row) {
-      return {
-        id: uid(), createdAt: Date.now(), name: row.name || row.Name || '',
-        contacted: (row.contacted || 'no').toLowerCase() === 'yes' ? 'yes' : 'no',
-        response: ['Yes','No','Pending'].includes(row.response) ? row.response : 'Pending',
-        phone: row.phone || '', contactedOn: row.contactedOn || '', followup: row.followup || '',
-        recurring: (row.recurring || 'no').toLowerCase() === 'yes' ? 'yes' : 'no',
-        recurringType: row.recurringType || 'date', recurringDate: row.recurringDate || '', notes: row.notes || ''
+
+    // --- STATS ---
+    function calculateStats() {
+      const total = leadsData.length;
+      const yes = leadsData.filter(l => l.response === 'Yes').length;
+      const pending = leadsData.filter(l => l.response === 'Pending').length;
+      const rate = total > 0 ? Math.round((yes / total) * 100) : 0;
+
+      document.getElementById('statTotal').innerText = total;
+      document.getElementById('statYes').innerText = yes;
+      document.getElementById('statPending').innerText = pending;
+      document.getElementById('statRate').innerText = rate + '%';
+    }
+
+    // --- ACTIONS ---
+    document.getElementById('leadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('leadId').value;
+      
+      const payload = {
+        name: document.getElementById('name').value,
+        contacted: document.getElementById('contacted').value,
+        response: document.getElementById('response').value,
+        phone: document.getElementById('phone').value,
+        contactedOn: document.getElementById('contactedOn').value,
+        followup: document.getElementById('followup').value,
+        recurringType: document.getElementById('recurringType').value,
+        notes: document.getElementById('notes').value,
+        updatedAt: Date.now()
       };
-    }
-    function importCsvText(text) {
-      const lines = text.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-      if (lines.length < 2) return [];
-      const headers = parseCsvLine(lines[0]);
-      return lines.slice(1).map(line => {
-        const values = parseCsvLine(line);
-        const row = {};
-        headers.forEach((header, index) => row[header] = values[index] || '');
-        return normalizeCsvRow(row);
-      }).filter(entry => entry.name);
-    }
-    function finishCsvImport(rows) {
-      if (!rows.length) { alert('No valid CSV rows were found.'); return; }
-      entries = [...rows.reverse(), ...entries];
-      persist();
-      $('csvFile').value = '';
-      $('csvText').value = '';
-      closeOverlay('csvOverlay');
-      render();
-    }
-    function importCsv() {
-      const file = $('csvFile').files[0];
-      const pasted = $('csvText').value.trim();
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => finishCsvImport(importCsvText(String(reader.result || '')));
-        reader.readAsText(file);
-        return;
-      }
-      if (pasted) { finishCsvImport(importCsvText(pasted)); return; }
-      alert('Choose a CSV file or paste CSV text first.');
-    }
 
-    document.querySelectorAll('.overlay').forEach(overlay => {
-      overlay.addEventListener('click', event => { if (event.target === overlay) overlay.classList.remove('open'); });
-    });
-    document.addEventListener('click', event => {
-      const menu = $('filterMenu');
-      const button = $('filterButton');
-      if (!menu || !button) return;
-      if (menu.classList.contains('open') && !menu.contains(event.target) && !button.contains(event.target)) closeFilterMenu();
-    });
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        document.querySelectorAll('.overlay.open').forEach(overlay => overlay.classList.remove('open'));
-        closeFilterMenu();
+      try {
+        if (id) {
+          await updateDoc(doc(db, "leads", id), payload);
+          showToast("Lead updated successfully");
+        } else {
+          payload.createdAt = Date.now();
+          await addDoc(leadsRef, payload);
+          showToast("New lead captured!");
+        }
+        closeModal();
+      } catch (err) {
+        showToast("Backend error. Please try again.", true);
       }
     });
 
-    load();
-    render();
+    window.openModal = function() {
+      document.getElementById('leadForm').reset();
+      document.getElementById('leadId').value = '';
+      document.getElementById('modalTitle').innerText = "Create Outreach Entry";
+      document.getElementById('contactedOn').valueAsDate = new Date();
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    window.closeModal = function() {
+      document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    window.editLead = function(id) {
+      const lead = leadsData.find(l => l.id === id);
+      if (!lead) return;
+      document.getElementById('leadId').value = lead.id;
+      document.getElementById('name').value = lead.name;
+      document.getElementById('contacted').value = lead.contacted;
+      document.getElementById('response').value = lead.response;
+      document.getElementById('phone').value = lead.phone;
+      document.getElementById('contactedOn').value = lead.contactedOn;
+      document.getElementById('followup').value = lead.followup;
+      document.getElementById('recurringType').value = lead.recurringType || 'none';
+      document.getElementById('notes').value = lead.notes;
+      
+      document.getElementById('modalTitle').innerText = "Update Lead Intelligence";
+      document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    window.deleteLead = async function(id) {
+      if (confirm("Are you sure you want to remove this lead from the database?")) {
+        await deleteDoc(doc(db, "leads", id));
+        showToast("Lead deleted");
+      }
+    }
+
+    window.filterLeads = function() {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = leadsData.filter(l => 
+        l.name.toLowerCase().includes(term) || 
+        (l.phone && l.phone.includes(term))
+      );
+      renderUI(filtered);
+    }
+
+    window.exportToCSV = function() {
+      if(leadsData.length === 0) return showToast("Nothing to export", true);
+      let csv = "Business Name,Status,Phone,FollowUp,Notes\n";
+      leadsData.forEach(l => {
+        csv += `"${l.name}","${l.response}","${l.phone}","${l.followup}","${l.notes.replace(/\n/g, " ")}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `TurboTech_Report_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+    }
+
+    function showToast(msg, error = false) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.borderLeft = error ? "5px solid var(--red)" : "5px solid var(--primary)";
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // Initialize Icons
+    lucide.createIcons();
   </script>
 </body>
 </html>
