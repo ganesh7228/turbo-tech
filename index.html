@@ -1,3 +1,5 @@
+--- START OF FILE index (2).html ---
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +13,7 @@
     :root {
       --primary: #2563eb;
       --primary-soft: #eff6ff;
+      --primary-hover: #1d4ed8;
       --bg-slate: #f8fafc;
       --sidebar: #0f172a;
       --text-main: #1e293b;
@@ -18,212 +21,282 @@
       --border: #e2e8f0;
       --white: #ffffff;
       --danger: #ef4444;
+      --danger-soft: #fef2f2;
       --success: #10b981;
+      --success-soft: #ecfdf5;
       --warning: #f59e0b;
-      --radius: 16px;
+      --warning-soft: #fffbeb;
+      --radius: 12px;
       --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-      --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-slate); color: var(--text-main); overflow-x: hidden; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-slate); color: var(--text-main); line-height: 1.5; }
 
-    /* --- SKELETON LOADING --- */
-    .skeleton { background: #e2e8f0; background: linear-gradient(110deg, #eceff1 8%, #f5f7f8 18%, #eceff1 33%); border-radius: 12px; background-size: 200% 100%; animation: 1.5s shine linear infinite; }
-    @keyframes shine { to { background-position-x: -200%; } }
-    .skeleton-card { height: 100px; width: 100%; margin-bottom: 15px; }
+    /* AUTH PAGE */
+    #loginPage { height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top right, #1e293b, #0f172a); padding: 20px; }
+    .login-card { background: var(--white); padding: 48px 40px; border-radius: 24px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); width: 100%; max-width: 400px; }
+    .google-btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 1px solid var(--border); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 600; font-family: inherit; transition: var(--transition); color: var(--text-main); }
+    .google-btn:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
 
-    /* --- AUTH PAGE --- */
-    #loginPage { height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; padding: 20px; }
-    .login-card { background: var(--white); padding: 40px; border-radius: 24px; text-align: center; width: 100%; max-width: 400px; animation: fadeInUp 0.5s ease; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    /* LAYOUT */
+    #mainApp { display: none; }
+    .app-container { display: flex; min-height: 100vh; }
 
-    /* --- MOBILE NAV BAR --- */
-    .mobile-top-bar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--white); border-bottom: 1px solid var(--border); z-index: 100; padding: 0 20px; align-items: center; justify-content: space-between; }
-    
-    /* --- SIDEBAR --- */
-    aside { width: 260px; background: var(--sidebar); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 200; transition: var(--transition); }
-    .sidebar-brand { padding: 32px 24px; display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.25rem; }
+    /* SIDEBAR */
+    aside { width: 260px; background: var(--sidebar); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; transition: var(--transition); }
+    .sidebar-brand { padding: 32px 24px; display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.025em; }
     .nav-list { flex: 1; padding: 0 16px; list-style: none; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #94a3b8; border-radius: 12px; cursor: pointer; transition: var(--transition); margin-bottom: 4px; }
-    .nav-item.active { background: var(--primary); color: white; }
-    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 150; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #94a3b8; border-radius: 10px; cursor: pointer; transition: var(--transition); margin-bottom: 4px; font-weight: 500; }
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+    .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+    .logout-area { padding: 24px 16px; border-top: 1px solid rgba(255,255,255,0.1); }
 
-    /* --- SEARCH EXPERIENCE (Instagram Style) --- */
-    .search-wrapper { position: relative; transition: var(--transition); z-index: 300; }
-    .search-box { position: relative; flex: 1; }
-    .search-box input { width: 100%; padding: 14px 16px 14px 48px; border-radius: 14px; border: 1px solid var(--border); outline: none; background: white; transition: var(--transition); }
-    .search-box i { position: absolute; left: 18px; top: 15px; color: var(--text-muted); pointer-events: none; }
-    
-    .search-focused { position: fixed; inset: 0; background: var(--bg-slate); padding: 20px; z-index: 400; display: none; flex-direction: column; overflow-y: auto; }
-    .search-focused.active { display: flex; }
-    .close-search { display: none; padding: 10px; color: var(--primary); font-weight: 700; cursor: pointer; }
+    /* MAIN CONTENT */
+    main { margin-left: 260px; flex: 1; padding: 40px; max-width: 1400px; margin-right: auto; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; gap: 20px; flex-wrap: wrap; }
+    .search-box { position: relative; flex: 1; max-width: 450px; }
+    .search-box input { width: 100%; padding: 14px 16px 14px 48px; border-radius: 14px; border: 1px solid var(--border); outline: none; transition: var(--transition); font-family: inherit; font-size: 0.95rem; }
+    .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+    .search-box i { position: absolute; left: 18px; top: 15px; color: var(--text-muted); width: 18px; }
 
-    /* --- MAIN LAYOUT --- */
-    main { margin-left: 260px; padding: 40px; transition: var(--transition); }
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; gap: 20px; }
-
-    /* --- STATS GRID --- */
+    /* STATS GRID */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
-    .stat-card { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
-    .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--primary); }
-    .stat-card small { color: var(--text-muted); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; }
-    .stat-card h3 { font-size: 1.5rem; margin-top: 4px; }
+    .stat-card { background: white; padding: 20px; border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
+    .stat-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+    .stat-card small { color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card h3 { font-size: 1.75rem; font-weight: 700; color: var(--text-main); }
+    .stat-card .icon-bg { position: absolute; right: -10px; bottom: -10px; opacity: 0.05; transform: rotate(-15deg); }
 
-    /* --- TABLE UI --- */
-    .card-ui { background: white; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); }
-    table { width: 100%; border-collapse: collapse; }
-    th { background: #f8fafc; padding: 16px 24px; font-size: 0.75rem; color: var(--text-muted); text-align: left; border-bottom: 1px solid var(--border); }
-    td { padding: 18px 24px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    /* TABLE UI */
+    .card-ui { background: white; border-radius: 18px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #f8fafc; padding: 16px 24px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 18px 24px; border-bottom: 1px solid var(--border); font-size: 0.95rem; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background-color: #fbfcfe; }
 
+    /* BADGES */
     .badge { padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
-    .badge-yes { background: #ecfdf5; color: #10b981; }
-    .badge-no { background: #fef2f2; color: #ef4444; }
-    .badge-pending { background: #fffbeb; color: #f59e0b; }
+    .badge-yes { background: var(--success-soft); color: var(--success); }
+    .badge-no { background: var(--danger-soft); color: var(--danger); }
+    .badge-pending { background: var(--warning-soft); color: var(--warning); }
 
-    .btn { padding: 12px 24px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
+    /* BUTTONS */
+    .btn { padding: 12px 24px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); font-family: inherit; font-size: 0.9rem; }
     .btn-primary { background: var(--primary); color: white; }
-    .btn-icon { padding: 10px; color: var(--text-muted); border-radius: 10px; transition: var(--transition); }
-    .btn-icon:hover { background: var(--primary-soft); color: var(--primary); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+    .btn-icon { padding: 10px; background: transparent; color: var(--text-muted); border-radius: 10px; display: inline-flex; transition: var(--transition); position: relative; }
+    .btn-icon:hover { color: var(--primary); background: var(--primary-soft); }
 
-    /* --- MODAL (EDIT PAGE) --- */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 15px; }
+    /* TOOLTIP SIMULATION */
+    .btn-icon[title]:hover::after {
+        content: attr(title); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+        background: var(--sidebar); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; white-space: nowrap; z-index: 10;
+    }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
     .modal-overlay.open { display: flex; }
-    .modal { background: white; width: 100%; max-width: 600px; border-radius: 28px; padding: 32px; max-height: 90vh; overflow-y: auto; animation: modalSlide 0.4s ease; }
-    @keyframes modalSlide { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
-    .form-group input, .form-group select, .form-group textarea { padding: 14px; border: 1px solid var(--border); border-radius: 12px; outline: none; font-family: inherit; font-size: 0.95rem; transition: var(--transition); }
-    .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); }
+    .modal { background: white; width: 100%; max-width: 650px; border-radius: 24px; padding: 40px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+    .form-group input, .form-group select, .form-group textarea { padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; outline: none; transition: var(--transition); font-family: inherit; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
     .full-width { grid-column: span 2; }
 
-    /* --- MOBILE RESPONSIVENESS --- */
+    /* --- ENHANCEMENT: SKELETON ANIMATION --- */
+    .skeleton { background: #e2e8f0; position: relative; overflow: hidden; border-radius: 4px; }
+    .skeleton::after {
+      content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+    /* --- ENHANCEMENT: MOBILE SIDEBAR TOGGLE --- */
+    .mobile-header { display: none; padding: 16px; background: var(--sidebar); color: white; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 110; }
+    .menu-toggle { background: none; border: none; color: white; cursor: pointer; }
+    
+    /* --- ENHANCEMENT: SEARCH OVERLAY --- */
+    #searchOverlay {
+      position: fixed; inset: 0; background: white; z-index: 2000; display: none; flex-direction: column; padding: 20px;
+    }
+    #searchOverlay.active { display: flex; }
+    .search-overlay-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .search-overlay-input { flex: 1; border: none; font-size: 1.5rem; outline: none; font-family: inherit; font-weight: 600; }
+
+    /* MOBILE RESPONSIVENESS */
     @media (max-width: 1024px) {
-        aside { transform: translateX(-100%); }
-        aside.open { transform: translateX(0); }
-        .sidebar-overlay.open { display: block; }
-        .mobile-top-bar { display: flex; }
-        main { margin-left: 0; padding: 84px 16px 24px 16px; }
-        .header-row { flex-direction: column; align-items: stretch; margin-top: 10px; }
-        .search-box input:focus { position: relative; }
-        .stats-grid { grid-template-columns: 1fr 1fr; }
+        aside { transform: translateX(-100%); width: 240px; }
+        aside.open { transform: translateX(0); box-shadow: 20px 0 50px rgba(0,0,0,0.3); }
+        main { margin-left: 0; padding: 24px; }
+        .header-row { flex-direction: column; align-items: stretch; margin-top: 16px; }
+        .search-box { max-width: none; }
+        .mobile-header { display: flex; }
+        /* Improved Mobile Modal */
+        .form-grid { grid-template-columns: 1fr; gap: 16px; }
+        .full-width { grid-column: auto; }
+        .modal { padding: 24px; }
     }
 
     @media (max-width: 768px) {
-        .form-grid { grid-template-columns: 1fr; }
-        .full-width { grid-column: span 1; }
-        .modal { padding: 24px; border-radius: 24px; }
-        .modal button { width: 100%; justify-content: center; }
-        
         thead { display: none; }
-        tr { display: block; background: white; border: 1px solid var(--border); border-radius: 20px; margin-bottom: 16px; padding: 16px; }
-        td { display: flex; justify-content: space-between; border: none; padding: 8px 0; font-size: 0.9rem; }
-        td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); }
-        td:first-child { border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 8px; font-weight: 800; color: var(--primary); }
+        tr { display: block; background: white; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 16px; padding: 16px; position: relative; }
+        td { display: flex; justify-content: space-between; align-items: center; border: none; padding: 8px 0; font-size: 0.9rem; }
+        td::before { content: attr(data-label); font-weight: 700; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        td:first-child { border-bottom: 1px solid var(--border); margin-bottom: 8px; padding-bottom: 12px; font-size: 1.1rem; }
         td:first-child::before { display: none; }
-        td:last-child { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 8px; justify-content: flex-end; }
+        td[style*="text-align: right"] { justify-content: flex-end; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 12px; }
+        .stats-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
   <!-- MOBILE HEADER -->
-  <nav class="mobile-top-bar">
-    <button class="btn-icon" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
-    <div style="font-weight: 800; color: var(--primary); display:flex; align-items:center; gap:8px;"><i data-lucide="zap"></i> TurboTech</div>
-    <div style="width: 40px;"></div>
-  </nav>
+  <div class="mobile-header">
+    <div class="sidebar-brand" style="padding:0;"><i data-lucide="zap" style="color:var(--primary); fill: var(--primary)"></i> TurboTech</div>
+    <button class="menu-toggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+  </div>
+
+  <!-- SEARCH OVERLAY -->
+  <div id="searchOverlay">
+    <div class="search-overlay-header">
+      <i data-lucide="search" style="color: var(--primary)"></i>
+      <input type="text" id="overlaySearchInput" class="search-overlay-input" placeholder="Type to search leads..." oninput="syncAndRender(this.value)">
+      <button class="btn-icon" onclick="closeSearchOverlay()"><i data-lucide="x" size="28"></i></button>
+    </div>
+    <div id="overlayResults" style="overflow-y: auto; flex: 1;">
+      <!-- Results will be mirrored here in mobile-style cards -->
+    </div>
+  </div>
 
   <div id="loginPage">
     <div class="login-card">
-        <i data-lucide="zap" style="color:var(--primary); width:48px; height:48px; margin-bottom:16px;"></i>
-        <h2 style="margin-bottom: 24px;">TurboTech Tracker</h2>
-        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="googleLogin()">Sign in with Google</button>
+      <div style="background: var(--primary-soft); width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+        <i data-lucide="zap" style="color:var(--primary); width:32px; height:32px;"></i>
+      </div>
+      <h2 style="margin-bottom: 8px; font-size: 1.5rem; font-weight: 800;">TurboTech Tracker</h2>
+      <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 0.9rem;">Sign in to manage your sales pipeline</p>
+      <button class="google-btn" onclick="googleLogin()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" width="18" height="18" alt="Google">
+        Sign in with Google
+      </button>
     </div>
   </div>
 
   <div id="mainApp">
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-    <aside id="sidebar">
-        <div class="sidebar-brand"><i data-lucide="zap" style="color:var(--primary); fill:var(--primary)"></i> TurboTech</div>
+    <div class="app-container">
+      <aside id="sidebar">
+        <div class="sidebar-brand"><i data-lucide="zap" style="color:var(--primary); fill: var(--primary)"></i> TurboTech</div>
         <ul class="nav-list">
-          <li class="nav-item active" id="nav-leads" onclick="switchView('leads'); toggleSidebar(false)"><i data-lucide="layout-dashboard"></i> <span>Pipeline</span></li>
-          <li class="nav-item" id="nav-trash" onclick="switchView('trash'); toggleSidebar(false)"><i data-lucide="trash-2"></i> <span>Trash Bin</span></li>
+          <li class="nav-item active" id="nav-leads" onclick="switchView('leads')"><i data-lucide="layout-dashboard"></i> <span>Pipeline</span></li>
+          <li class="nav-item" id="nav-trash" onclick="switchView('trash')"><i data-lucide="trash-2"></i> <span>Trash</span></li>
         </ul>
-        <div class="logout-area" style="padding:20px 16px;"><button class="btn" style="width:100%; background:rgba(255,255,255,0.1); color:white;" onclick="logoutUser()">Logout</button></div>
-    </aside>
-
-    <main>
-      <header class="header-row" id="mainHeader">
-        <div class="search-box">
-          <i data-lucide="search"></i>
-          <input type="text" id="searchInput" placeholder="Search by name, phone or notes..." onfocus="enterSearchMode()" oninput="renderTable()">
+        <div class="logout-area">
+          <button class="btn" onclick="logoutUser()" style="width:100%; color: #94a3b8; background: rgba(255,255,255,0.05); justify-content: center;">
+            <i data-lucide="log-out"></i> Logout
+          </button>
         </div>
-        <button class="btn btn-primary" onclick="openModal()"><i data-lucide="plus"></i> New Lead</button>
-      </header>
+      </aside>
 
-      <!-- SEARCH MODE OVERLAY -->
-      <div id="searchOverlay" class="search-focused">
-          <div style="display:flex; align-items:center; gap:15px; margin-bottom: 20px;">
-              <button class="btn-icon" onclick="exitSearchMode()"><i data-lucide="arrow-left"></i></button>
-              <div class="search-box" style="flex:1">
-                  <i data-lucide="search"></i>
-                  <input type="text" id="focusedSearchInput" placeholder="Type to search..." oninput="syncSearch(this)">
-              </div>
+      <main>
+        <header class="header-row">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchInput" placeholder="Search businesses, phones, or notes..." oninput="renderTable()" onfocus="openSearchOverlay()">
           </div>
-          <div id="searchResults"></div>
-      </div>
+          <button class="btn btn-primary" onclick="openModal()"><i data-lucide="plus"></i> New Lead</button>
+        </header>
 
-      <section class="stats-grid" id="statsContainer">
-        <!-- Dashboard cards are auto-updated by JS -->
-      </section>
+        <!-- DASHBOARD CARDS -->
+        <section class="stats-grid" id="statsContainer">
+          <div class="stat-card" onclick="setDashboardFilter('all')">
+            <small>Total Leads</small>
+            <h3 id="statTotal">0</h3>
+            <i data-lucide="users" class="icon-bg" size="48"></i>
+          </div>
+          <div class="stat-card" onclick="setDashboardFilter('Yes')">
+            <small>Interested</small>
+            <h3 id="statYes" style="color:var(--success)">0</h3>
+            <i data-lucide="smile" class="icon-bg" size="48"></i>
+          </div>
+          <div class="stat-card" onclick="setDashboardFilter('No')">
+            <small>Not Interested</small>
+            <h3 id="statNo" style="color:var(--danger)">0</h3>
+            <i data-lucide="frown" class="icon-bg" size="48"></i>
+          </div>
+          <div class="stat-card" onclick="setDashboardFilter('Pending')">
+            <small>Pending</small>
+            <h3 id="statPending" style="color:var(--warning)">0</h3>
+            <i data-lucide="clock" class="icon-bg" size="48"></i>
+          </div>
+          <div class="stat-card" onclick="setDashboardContactFilter('yes')">
+            <small>Contacted</small>
+            <h3 id="statContacted" style="color:var(--primary)">0</h3>
+            <i data-lucide="phone-call" class="icon-bg" size="48"></i>
+          </div>
+          <div class="stat-card" onclick="setDashboardContactFilter('no')">
+            <small>Not Contacted</small>
+            <h3 id="statNotContacted" style="color:var(--text-muted)">0</h3>
+            <i data-lucide="phone-off" class="icon-bg" size="48"></i>
+          </div>
+        </section>
 
-      <div id="loadingState" style="display:none;">
-          <div class="skeleton skeleton-card"></div>
-          <div class="skeleton skeleton-card"></div>
-          <div class="skeleton skeleton-card"></div>
-      </div>
+        <h2 id="viewTitle" style="margin-bottom: 24px; font-weight: 800; letter-spacing: -0.02em;">All Leads</h2>
 
-      <div class="card-ui" id="tableContainer">
-        <table>
-          <thead>
-            <tr>
-              <th>Lead Info</th>
-              <th>Status</th>
-              <th>Response</th>
-              <th>Connect</th>
-              <th>Follow-up</th>
-              <th style="text-align: right;">Action</th>
-            </tr>
-          </thead>
-          <tbody id="leadsBody"></tbody>
-        </table>
-      </div>
-    </main>
+        <div class="card-ui">
+          <table id="leadsTable">
+            <thead>
+              <tr>
+                <th>Lead Info</th>
+                <th>Contacted</th>
+                <th>Response</th>
+                <th>Communication</th>
+                <th>Follow-up</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="leadsBody">
+                <!-- SKELETON LOADERS -->
+                <tr><td colspan="6"><div class="skeleton" style="height:20px; width:100%; margin:10px 0;"></div></td></tr>
+                <tr><td colspan="6"><div class="skeleton" style="height:20px; width:100%; margin:10px 0;"></div></td></tr>
+                <tr><td colspan="6"><div class="skeleton" style="height:20px; width:100%; margin:10px 0;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
   </div>
 
-  <!-- MODAL -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <h2 id="modalHeader" style="margin-bottom:8px;">Lead Intelligence</h2>
-      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:24px;">Update all business data points below.</p>
+      <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h2 id="modalHeader" style="font-weight: 800;">Lead Intelligence</h2>
+        <button class="btn-icon" onclick="closeModal()"><i data-lucide="x"></i></button>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">Enter the business details below to track progress.</p>
+      
       <form id="leadForm">
         <input type="hidden" id="leadId">
         <div class="form-grid">
-          <div class="form-group full-width"><label>Business Name</label><input type="text" id="name" required></div>
-          <div class="form-group"><label>Primary Phone</label><input type="tel" id="phone"></div>
-          <div class="form-group"><label>Secondary Phone</label><input type="tel" id="phone2"></div>
-          <div class="form-group"><label>Contacted?</label><select id="contacted"><option value="no">Not Called</option><option value="yes">Called</option></select></div>
-          <div class="form-group"><label>Response</label><select id="response"><option value="Pending">Pending</option><option value="Yes">Interested</option><option value="No">Not Interested</option></select></div>
+          <div class="form-group full-width"><label>Business Name</label><input type="text" id="name" placeholder="e.g. Acme Corp" required></div>
+          <div class="form-group"><label>Primary Phone</label><input type="tel" id="phone" placeholder="9998887770"></div>
+          <div class="form-group"><label>Secondary Phone</label><input type="tel" id="phone2" placeholder="Optional"></div>
+          <div class="form-group"><label>Contacted Status</label><select id="contacted"><option value="no">Not Called</option><option value="yes">Called</option></select></div>
+          <div class="form-group"><label>Response Type</label><select id="response"><option value="Pending">Pending</option><option value="Yes">Interested</option><option value="No">Not Interested</option></select></div>
           <div class="form-group"><label>Follow-up Date</label><input type="date" id="followup"></div>
-          <div class="form-group"><label>Maps Link</label><input type="url" id="mapsLink" placeholder="https://goo.gl/maps/..."></div>
-          <div class="form-group full-width"><label>Internal Notes</label><textarea id="notes" rows="3"></textarea></div>
+          <div class="form-group"><label>Maps Link (Optional)</label><input type="url" id="mapLink" placeholder="https://maps.google.com/..."></div>
+          <div class="form-group full-width"><label>Internal Notes</label><textarea id="notes" rows="3" placeholder="Mention specific requirements or discussion points..."></textarea></div>
         </div>
-        <div style="margin-top: 32px; display: flex; justify-content: flex-end; gap: 12px;">
-          <button type="button" class="btn" style="background:#f1f5f9;" onclick="closeModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Changes</button>
+        <div style="margin-top: 40px; display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="button" class="btn" style="background: #f1f5f9;" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Lead Profile</button>
         </div>
       </form>
     </div>
@@ -252,171 +325,196 @@
     let leads = [];
     let currentView = 'leads';
     let dashFilter = 'all';
-    let isLoading = true;
+    let contactFilter = 'all';
 
-    // --- AUTH ---
-    window.googleLogin = () => signInWithPopup(auth, provider);
+    // ENHANCEMENT: Mobile Sidebar logic
+    window.toggleSidebar = () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    };
+
+    // ENHANCEMENT: Search Overlay logic
+    window.openSearchOverlay = () => {
+        if(window.innerWidth < 1024) {
+            document.getElementById('searchOverlay').classList.add('active');
+            document.getElementById('overlaySearchInput').focus();
+        }
+    };
+    window.closeSearchOverlay = () => {
+        document.getElementById('searchOverlay').classList.remove('active');
+    };
+    window.syncAndRender = (val) => {
+        document.getElementById('searchInput').value = val;
+        renderTable();
+    }
+
+    window.googleLogin = async () => {
+        try { await signInWithPopup(auth, provider); } 
+        catch (e) { console.error("Login Error", e); alert("Login Failed"); }
+    };
     window.logoutUser = () => signOut(auth);
 
     onAuthStateChanged(auth, (user) => {
       const lp = document.getElementById("loginPage");
       const ma = document.getElementById("mainApp");
       if (user && user.email === "ganesh.r20087@gmail.com") {
-        lp.style.display = "none"; ma.style.display = "block"; initApp();
+        lp.style.display = "none";
+        ma.style.display = "block";
+        initApp();
       } else {
-        lp.style.display = "flex"; ma.style.display = "none";
+        if(user) { alert("Unauthorized"); signOut(auth); }
+        lp.style.display = "flex";
+        ma.style.display = "none";
       }
     });
 
-    // --- SIDEBAR & SEARCH UX ---
-    window.toggleSidebar = (force) => {
-        const side = document.getElementById('sidebar');
-        const over = document.getElementById('sidebarOverlay');
-        const isOpen = force !== undefined ? force : !side.classList.contains('open');
-        side.classList.toggle('open', isOpen);
-        over.classList.toggle('open', isOpen);
-    };
-
-    window.enterSearchMode = () => {
-        if(window.innerWidth > 1024) return;
-        document.getElementById('searchOverlay').classList.add('active');
-        document.getElementById('focusedSearchInput').focus();
-    };
-
-    window.exitSearchMode = () => {
-        document.getElementById('searchOverlay').classList.remove('active');
-        document.getElementById('searchInput').value = '';
-        renderTable();
-    };
-
-    window.syncSearch = (el) => {
-        document.getElementById('searchInput').value = el.value;
-        renderTable();
-    };
-
-    // --- APP LOGIC ---
     function initApp() {
-      document.getElementById('loadingState').style.display = 'block';
       const q = query(leadsRef, orderBy("name", "asc"));
       onSnapshot(q, (snapshot) => {
         leads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        isLoading = false;
-        document.getElementById('loadingState').style.display = 'none';
         renderTable();
       });
     }
 
+    window.setDashboardFilter = (val) => {
+        dashFilter = val;
+        contactFilter = 'all';
+        document.getElementById('viewTitle').innerText = val === 'all' ? "All Leads" : (val + " Leads");
+        renderTable();
+    };
+
+    window.setDashboardContactFilter = (val) => {
+        contactFilter = val;
+        dashFilter = 'all';
+        document.getElementById('viewTitle').innerText = val === 'yes' ? "Contacted Leads" : "Not Contacted Leads";
+        renderTable();
+    };
+
     window.switchView = (view) => {
       currentView = view;
+      dashFilter = 'all';
+      contactFilter = 'all';
       document.getElementById('nav-leads').classList.toggle('active', view === 'leads');
       document.getElementById('nav-trash').classList.toggle('active', view === 'trash');
+      document.getElementById('viewTitle').innerText = view === 'leads' ? 'All Leads' : 'Trash Storage';
+      document.getElementById('statsContainer').style.display = view === 'leads' ? 'grid' : 'none';
+      if(window.innerWidth < 1024) toggleSidebar(); // Close sidebar on mobile after switch
       renderTable();
     };
 
     window.renderTable = () => {
+      const tbody = document.getElementById('leadsBody');
       const search = document.getElementById('searchInput').value.toLowerCase();
+      
       const filtered = leads.filter(l => {
         const matchesView = currentView === 'leads' ? !l.deleted : l.deleted;
-        const matchesSearch = l.name.toLowerCase().includes(search) || (l.phone && l.phone.includes(search)) || (l.notes && l.notes.toLowerCase().includes(search));
-        return matchesView && matchesSearch;
+        const matchesDash = dashFilter === 'all' || l.response === dashFilter;
+        const matchesContact = contactFilter === 'all' || l.contacted === contactFilter;
+        
+        const matchesSearch = 
+            l.name.toLowerCase().includes(search) || 
+            (l.phone && l.phone.includes(search)) ||
+            (l.notes && l.notes.toLowerCase().includes(search));
+
+        return matchesView && matchesDash && matchesContact && matchesSearch;
       });
 
-      const container = document.getElementById('leadsBody');
-      const searchResults = document.getElementById('searchResults');
-
-      if (filtered.length === 0 && search) {
-          const emptyHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted)">No results for "${search}"</div>`;
-          container.innerHTML = emptyHTML;
-          searchResults.innerHTML = emptyHTML;
-          return;
-      }
-
-      const rows = filtered.map(l => {
-        const wa = l.phone ? l.phone.replace(/\D/g,'') : '';
+      const htmlRows = filtered.map(l => {
+        const waNumber = l.phone ? l.phone.replace(/\D/g,'') : '';
+        const contactedText = l.contacted === 'yes' ? 'Called' : 'Not Called';
+        const contactedClass = l.contacted === 'yes' ? 'yes' : 'no';
+        
         return `
         <tr>
-          <td data-label="Business"><strong>${l.name}</strong></td>
-          <td data-label="Status"><span class="badge badge-${l.contacted === 'yes' ? 'yes' : 'no'}">${l.contacted === 'yes' ? 'Called' : 'Not Called'}</span></td>
+          <td data-label="Lead Info"><strong>${l.name}</strong></td>
+          <td data-label="Contacted"><span class="badge badge-${contactedClass}">${contactedText}</span></td>
           <td data-label="Response"><span class="badge badge-${l.response.toLowerCase()}">${l.response}</span></td>
-          <td data-label="Connect">
-            <div style="display:flex; gap:8px;">
-               ${l.phone ? `<a href="tel:${l.phone}" class="btn-icon"><i data-lucide="phone" size="18"></i></a>` : ''}
-               ${l.phone ? `<a href="https://wa.me/${wa}" target="_blank" class="btn-icon"><i data-lucide="message-circle" size="18"></i></a>` : ''}
-               ${l.mapsLink ? `<a href="${l.mapsLink}" target="_blank" class="btn-icon" style="color:var(--success)"><i data-lucide="map-pin" size="18"></i></a>` : ''}
+          <td data-label="Communication">
+            <div style="display:flex; gap:4px;">
+               ${l.phone ? `<a href="tel:${l.phone}" class="btn-icon" title="Call Primary"><i data-lucide="phone" size="18"></i></a>` : ''}
+               ${l.phone ? `<a href="https://wa.me/${waNumber}" target="_blank" class="btn-icon" title="WhatsApp"><i data-lucide="message-circle" size="18"></i></a>` : ''}
+               ${l.mapLink ? `<a href="${l.mapLink}" target="_blank" class="btn-icon" title="Google Maps"><i data-lucide="map-pin" size="18"></i></a>` : ''}
             </div>
           </td>
-          <td data-label="Follow-up">${l.followup || '—'}</td>
-          <td style="text-align:right;">
-            <button class="btn-icon" onclick="editLead('${l.id}')"><i data-lucide="edit-3" size="18"></i></button>
-            <button class="btn-icon" onclick="softDelete('${l.id}')"><i data-lucide="trash-2" size="18"></i></button>
+          <td data-label="Follow-up">${l.followup || '<span style="color:#cbd5e1">—</span>'}</td>
+          <td style="text-align: right;">
+            ${!l.deleted ? `
+              <button class="btn-icon" onclick="editLead('${l.id}')" title="Edit Lead"><i data-lucide="edit-3" size="18"></i></button>
+              <button class="btn-icon" onclick="softDelete('${l.id}')" title="Move to Trash"><i data-lucide="trash-2" size="18" style="color:var(--danger)"></i></button>
+            ` : `
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:11px; background:var(--success)" onclick="restoreLead('${l.id}')">Restore</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:11px; background:var(--danger); margin-left:5px" onclick="permanentDelete('${l.id}')">Wipe</button>
+            `}
           </td>
-        </tr>`;
-      }).join('');
+        </tr>
+      `}).join('');
 
-      container.innerHTML = rows;
-      searchResults.innerHTML = rows; // Sync search overlay
-      updateDashboard();
+      tbody.innerHTML = htmlRows;
+      
+      // Update the Search Overlay Results as well
+      const overlayResults = document.getElementById('overlayResults');
+      if (overlayResults) {
+          overlayResults.innerHTML = `<table>${htmlRows}</table>`;
+      }
+      
+      updateStats();
       lucide.createIcons();
     };
 
-    function updateDashboard() {
-        const active = leads.filter(l => !l.deleted);
-        const stats = [
-            { label: 'Total', val: active.length, icon: 'users', color: 'var(--primary)' },
-            { label: 'Interested', val: active.filter(l => l.response === 'Yes').length, icon: 'smile', color: 'var(--success)' },
-            { label: 'Pending', val: active.filter(l => l.response === 'Pending').length, icon: 'clock', color: 'var(--warning)' },
-            { label: 'Contacted', val: active.filter(l => l.contacted === 'yes').length, icon: 'phone-call', color: 'var(--primary)' }
-        ];
-        document.getElementById('statsContainer').innerHTML = stats.map(s => `
-            <div class="stat-card">
-                <small>${s.label}</small>
-                <h3 style="color:${s.color}">${s.val}</h3>
-                <i data-lucide="${s.icon}" style="position:absolute; right:15px; bottom:15px; opacity:0.1" size="32"></i>
-            </div>
-        `).join('');
+    function updateStats() {
+      const active = leads.filter(l => !l.deleted);
+      document.getElementById('statTotal').innerText = active.length;
+      document.getElementById('statYes').innerText = active.filter(l => l.response === 'Yes').length;
+      document.getElementById('statNo').innerText = active.filter(l => l.response === 'No').length;
+      document.getElementById('statPending').innerText = active.filter(l => l.response === 'Pending').length;
+      document.getElementById('statContacted').innerText = active.filter(l => l.contacted === 'yes').length;
+      document.getElementById('statNotContacted').innerText = active.filter(l => l.contacted === 'no' || !l.contacted).length;
     }
 
-    // --- FORM ACTIONS ---
+    window.softDelete = async (id) => { if(confirm("Move this lead to Trash?")) await updateDoc(doc(db, "leads", id), { deleted: true, deletedAt: Date.now() }); };
+    window.restoreLead = async (id) => await updateDoc(doc(db, "leads", id), { deleted: false, deletedAt: null });
+    window.permanentDelete = async (id) => { if(confirm("Permanently wipe this lead?")) await deleteDoc(doc(db, "leads", id)); };
+
     window.openModal = () => { 
         document.getElementById('leadForm').reset(); 
-        document.getElementById('leadId').value = '';
+        document.getElementById('leadId').value = ''; 
+        document.getElementById('modalHeader').innerText = "New Lead Profile";
         document.getElementById('modalOverlay').classList.add('open'); 
     };
     window.closeModal = () => document.getElementById('modalOverlay').classList.remove('open');
 
     window.editLead = (id) => {
-        const l = leads.find(x => x.id === id);
-        document.getElementById('leadId').value = l.id;
-        document.getElementById('name').value = l.name;
-        document.getElementById('phone').value = l.phone || '';
-        document.getElementById('phone2').value = l.phone2 || '';
-        document.getElementById('contacted').value = l.contacted;
-        document.getElementById('response').value = l.response;
-        document.getElementById('followup').value = l.followup || '';
-        document.getElementById('mapsLink').value = l.mapsLink || '';
-        document.getElementById('notes').value = l.notes || '';
-        document.getElementById('modalOverlay').classList.add('open');
+      const l = leads.find(lead => lead.id === id);
+      document.getElementById('leadId').value = l.id;
+      document.getElementById('name').value = l.name;
+      document.getElementById('phone').value = l.phone || '';
+      document.getElementById('phone2').value = l.phone2 || '';
+      document.getElementById('contacted').value = l.contacted || 'no';
+      document.getElementById('response').value = l.response || 'Pending';
+      document.getElementById('followup').value = l.followup || '';
+      document.getElementById('notes').value = l.notes || '';
+      document.getElementById('mapLink').value = l.mapLink || '';
+      document.getElementById('modalHeader').innerText = "Update Intelligence";
+      document.getElementById('modalOverlay').classList.add('open');
     };
 
     document.getElementById('leadForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('leadId').value;
-        const data = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            phone2: document.getElementById('phone2').value,
-            contacted: document.getElementById('contacted').value,
-            response: document.getElementById('response').value,
-            followup: document.getElementById('followup').value,
-            mapsLink: document.getElementById('mapsLink').value,
-            notes: document.getElementById('notes').value,
-            deleted: false
-        };
-        id ? await updateDoc(doc(db, "leads", id), data) : await addDoc(leadsRef, { ...data, createdAt: Date.now() });
-        closeModal();
+      e.preventDefault();
+      const id = document.getElementById('leadId').value;
+      const data = {
+        name: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
+        phone2: document.getElementById('phone2').value,
+        contacted: document.getElementById('contacted').value,
+        response: document.getElementById('response').value,
+        followup: document.getElementById('followup').value,
+        notes: document.getElementById('notes').value,
+        mapLink: document.getElementById('mapLink').value,
+        deleted: false
+      };
+      if(id) await updateDoc(doc(db, "leads", id), data);
+      else { data.createdAt = Date.now(); await addDoc(leadsRef, data); }
+      closeModal();
     });
-
-    window.softDelete = async (id) => { if(confirm("Move to trash?")) await updateDoc(doc(db, "leads", id), { deleted: true }); };
 
     lucide.createIcons();
   </script>
